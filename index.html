@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="hi"> <head>
+<html lang="hi">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
@@ -16,7 +17,8 @@
             }
         }
     </script>
-    <title>हिंदी टाइपिंग टेस्ट टूल</title> <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Source+Code+Pro:wght@400;700&family=Open+Sans:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+    <title>हिंदी टाइपिंग टेस्ट टूल</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Source+Code+Pro:wght@400;700&family=Open+Sans:wght=400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* Basic Reset & Font Imports */
         * {
@@ -26,7 +28,8 @@
         }
 
         body {
-            font-family: 'Noto Sans Devanagari', 'Roboto', sans-serif; /* Added Hindi Font */
+            /* Default font for general UI text (Hindi) */
+            font-family: 'Noto Sans Devanagari', 'Roboto', sans-serif;
             background-color: #e3f2fd; /* Light Blue background */
             color: #333;
             display: flex;
@@ -55,12 +58,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* H1 स्टाइल को बरकरार रखा गया है, भले ही HTML में कोई H1 टैग न हो */
         h1 {
             text-align: center;
             color: #e91e63; /* Pink primary color */
             margin-bottom: 25px;
-            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* Added Hindi Font */
+            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* Use Noto for Hindi, Montserrat for English titles/numbers */
             font-size: 2.5em; /* Larger title */
             text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
         }
@@ -99,13 +101,14 @@
             font-size: 1em;
             margin-bottom: 5px;
             font-weight: 700;
+            font-family: 'Montserrat', sans-serif; /* English for stat labels */
         }
 
         .stat-item p {
             font-size: 1.8em; /* Slightly smaller for compactness */
             font-weight: bold;
             color: #e91e63; /* Pink for values */
-            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* Added Hindi Font */
+            font-family: 'Source Code Pro', monospace; /* Monospace for numbers */
             margin-bottom: 8px; /* Space above mini progress bar */
         }
 
@@ -174,9 +177,21 @@
             position: relative;
             line-height: 1.8; /* More spacing for readability */
             font-size: 1.2em; /* Slightly smaller font for more words per line */
-            font-family: 'Noto Sans Devanagari', 'Open Sans', sans-serif; /* Changed to Open Sans for better readability */
+            font-family: 'Noto Sans Devanagari', 'Open Sans', sans-serif; /* Default Hindi font for test area */
             color: #444;
         }
+        /* Specific font overrides for test area */
+        .test-area.font-mangal {
+            font-family: 'Mangal', 'Noto Sans Devanagari', 'Open Sans', sans-serif;
+        }
+        .test-area.font-krutidev {
+            font-family: 'Kruti Dev 010', 'Noto Sans Devanagari', 'Open Sans', sans-serif;
+            /* Note: Kruti Dev needs to be installed on the user's system */
+        }
+        .test-area.font-hind {
+            font-family: 'Hind Siliguri', 'Noto Sans Devanagari', 'Open Sans', sans-serif;
+        }
+
 
         /* For handling paragraphs and line breaks in test-area */
         .paragraph {
@@ -254,10 +269,21 @@
             border-radius: 8px;
             outline: none;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            font-family: 'Noto Sans Devanagari', 'Source Code Pro', monospace; /* Kept monospace for input */
+            font-family: 'Noto Sans Devanagari', 'Source Code Pro', monospace; /* Kept monospace for input, Noto for Hindi */
             background-color: #fcfcfc;
             margin-bottom: 20px; /* Space below input */
         }
+        /* Specific font overrides for input field based on selection */
+        #typing-input.font-mangal {
+            font-family: 'Mangal', 'Noto Sans Devanagari', 'Source Code Pro', monospace;
+        }
+        #typing-input.font-krutidev {
+            font-family: 'Kruti Dev 010', 'Noto Sans Devanagari', 'Source Code Pro', monospace;
+        }
+        #typing-input.font-hind {
+            font-family: 'Hind Siliguri', 'Noto Sans Devanagari', 'Source Code Pro', monospace;
+        }
+
 
         #typing-input:focus {
             border-color: #2196f3; /* Blue on focus */
@@ -278,7 +304,7 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
             margin: 0 10px;
-            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* Added Hindi Font */
+            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* English/Hindi for buttons */
             font-weight: 700;
         }
 
@@ -362,7 +388,7 @@
         .modal-content h2 {
             color: #e91e63;
             margin-bottom: 25px;
-            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* Added Hindi Font */
+            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* English/Hindi for title */
             font-size: 2em;
         }
 
@@ -425,6 +451,7 @@
             font-size: 1.2em;
             margin-bottom: 10px;
             text-align: center;
+            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* English/Hindi for title */
         }
 
         .error-details ul {
@@ -441,11 +468,13 @@
             color: #424242;
             flex-basis: 45%; /* Two columns */
             white-space: nowrap; /* Prevent wrapping for each stat */
+            font-family: 'Noto Sans Devanagari', 'Open Sans', sans-serif; /* Hindi/English for error labels */
         }
 
         .error-details li strong {
             color: #d32f2f;
             margin-left: 5px;
+            font-family: 'Source Code Pro', monospace; /* Monospace for numbers */
         }
 
 
@@ -495,7 +524,7 @@
         .settings-overlay h2 {
             color: #4CAF50; /* Green for settings header */
             margin-bottom: 30px;
-            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* Added Hindi Font */
+            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* English/Hindi for title */
             font-size: 2.2em;
         }
 
@@ -510,6 +539,7 @@
             margin-bottom: 10px; /* More space below label */
             color: #388e3c; /* Darker green for setting labels */
             font-size: 1.15em;
+            font-family: 'Noto Sans Devanagari', 'Roboto', sans-serif; /* Hindi for labels */
         }
 
         .setting-group select,
@@ -521,8 +551,26 @@
             font-size: 1.1em;
             background-color: #fff;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            font-family: 'Noto Sans Devanagari', 'Roboto', sans-serif; /* Added Hindi Font */
+            font-family: 'Noto Sans Devanagari', 'Roboto', sans-serif; /* Hindi for select/input values */
         }
+        /* Specific font for font selection dropdown */
+        #font-select {
+            font-family: 'Noto Sans Devanagari', 'Roboto', sans-serif; /* Default for dropdown options */
+        }
+        #font-select option[value="Kruti Dev 010"] {
+            font-family: 'Kruti Dev 010', 'Noto Sans Devanagari', sans-serif;
+            /* Note: This will only render correctly if Kruti Dev 010 is installed on the user's system */
+        }
+        #font-select option[value="Mangal"] {
+            font-family: 'Mangal', 'Noto Sans Devanagari', sans-serif;
+        }
+        #font-select option[value="Hind Siliguri"] {
+            font-family: 'Hind Siliguri', 'Noto Sans Devanagari', sans-serif;
+        }
+        #font-select option[value="Noto Sans Devanagari"] {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+
 
         .setting-group select:focus,
         .setting-group input[type="number"]:focus {
@@ -546,7 +594,7 @@
             border: 1px solid #aed581;
             border-radius: 8px;
             font-size: 1.1em;
-            font-family: 'Noto Sans Devanagari', 'Open Sans', sans-serif; /* Added Hindi Font */
+            font-family: 'Noto Sans Devanagari', 'Open Sans', sans-serif; /* Hindi for textarea */
             resize: vertical;
             margin-bottom: 10px;
         }
@@ -592,6 +640,19 @@
             overflow: hidden;
         }
 
+        /* Font warning for Kruti Dev */
+        .font-warning {
+            color: #d32f2f;
+            font-size: 0.9em;
+            margin-top: 10px;
+            text-align: center;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            display: none; /* Hidden by default */
+        }
+        .font-warning.show {
+            display: block;
+        }
+
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -602,7 +663,6 @@
                 padding: 15px;
             }
 
-            /* H1 स्टाइल यहां भी बरकरार रखा गया है */
             h1 {
                 font-size: 2em;
             }
@@ -687,8 +747,10 @@
 <body>
     <div class="settings-overlay" id="settings-overlay">
         <div class="settings-content">
-            <h2>हिंदी टाइपिंग टेस्ट सेटिंग्स</h2> <div class="setting-group">
-                <label for="test-duration">टेस्ट की अवधि चुनें:</label> <select id="test-duration">
+            <h2>हिंदी टाइपिंग टेस्ट सेटिंग्स</h2>
+            <div class="setting-group">
+                <label for="test-duration">टेस्ट की अवधि चुनें:</label>
+                <select id="test-duration">
                     <option value="1">1 मिनट</option>
                     <option value="2">2 मिनट</option>
                     <option value="3">3 मिनट</option>
@@ -701,50 +763,79 @@
             </div>
 
             <div class="setting-group">
-                <label for="target-wpm">आपका लक्ष्य WPM (वैकल्पिक):</label> <input type="number" id="target-wpm" min="10" max="200" placeholder="उदा. 40"> </div>
+                <label for="font-select">फ़ॉन्ट चुनें:</label> <select id="font-select">
+                    <option value="Noto Sans Devanagari">Noto Sans Devanagari (डिफ़ॉल्ट, यूनिकोड)</option>
+                    <option value="Mangal">Mangal (यूनिकोड, सरकारी नौकरियों में प्रयुक्त)</option>
+                    <option value="Kruti Dev 010">Kruti Dev 010 (नॉन-यूनिकोड, सरकारी नौकरियों में प्रयुक्त)</option>
+                    <option value="Hind Siliguri">Hind Siliguri (यूनिकोड)</option>
+                </select>
+                <p class="font-warning" id="krutidev-warning">नोट: 'कुर्ती देव 010' आपके सिस्टम पर स्थापित होना चाहिए अन्यथा यह सही ढंग से प्रदर्शित नहीं होगा।</p>
+            </div>
 
             <div class="setting-group">
-                <label for="target-accuracy">आपकी लक्ष्य सटीकता % (वैकल्पिक):</label> <input type="number" id="target-accuracy" min="50" max="100" placeholder="उदा. 95"> </div>
+                <label for="target-wpm">आपका लक्ष्य WPM (वैकल्पिक):</label>
+                <input type="number" id="target-wpm" min="10" max="200" placeholder="उदा. 40">
+            </div>
 
             <div class="setting-group">
-                <label for="story-type">कहानी का प्रकार:</label> <select id="story-type">
-                    <option value="random-words" selected>यादृच्छिक शब्द (डिफ़ॉल्ट)</option> <option value="ai-story">AI जनित कहानी (Backend की आवश्यकता है)</option> <option value="user-custom">उपयोगकर्ता की अपनी कहानी</option> </select>
+                <label for="target-accuracy">आपकी लक्ष्य सटीकता % (वैकल्पिक):</label>
+                <input type="number" id="target-accuracy" min="50" max="100" placeholder="उदा. 95">
+            </div>
+
+            <div class="setting-group">
+                <label for="story-type">कहानी का प्रकार:</label>
+                <select id="story-type">
+                    <option value="random-words" selected>यादृच्छिक शब्द (डिफ़ॉल्ट)</option>
+                    <option value="ai-story">AI जनित कहानी (Backend की आवश्यकता है)</option>
+                    <option value="user-custom">उपयोगकर्ता की अपनी कहानी</option>
+                </select>
             </div>
 
             <div id="custom-story-area">
-                <label for="custom-story-textarea">अपनी कहानी यहाँ पेस्ट करें:</label> <textarea id="custom-story-textarea" placeholder="वह पाठ पेस्ट करें जिसे आप यहाँ टाइप करना चाहते हैं..."></textarea> <div class="custom-story-controls">
-                    <button class="button secondary" id="add-story-link-button">Reedsy से कहानी जोड़ें</button> </div>
+                <label for="custom-story-textarea">अपनी कहानी यहाँ पेस्ट करें:</label>
+                <textarea id="custom-story-textarea" placeholder="वह पाठ पेस्ट करें जिसे आप यहाँ टाइप करना चाहते हैं..."></textarea>
+                <div class="custom-story-controls">
+                    <button class="button secondary" id="add-story-link-button">Reedsy से कहानी जोड़ें</button>
+                </div>
             </div>
 
             <div class="button-group">
-                <button class="button primary" id="save-settings-button">टेस्ट शुरू करें</button> <button class="button secondary" id="skip-settings-button">डिफ़ॉल्ट के साथ शुरू करें</button> </div>
+                <button class="button primary" id="save-settings-button">टेस्ट शुरू करें</button>
+                <button class="button secondary" id="skip-settings-button">डिफ़ॉल्ट के साथ शुरू करें</button>
+            </div>
         </div>
     </div>
 
     <div class="container content-hidden" id="main-content">
         <div class="stats top-stats">
             <div class="stat-item">
-                <h3>गति (शब्द प्रति मिनट)</h3> <p id="wpm">0</p>
+                <h3>WPM</h3>
+                <p id="wpm">0</p>
                 <div class="stat-progress-bar-container"><div class="stat-progress-bar-fill" id="wpm-progress-bar"></div></div>
             </div>
             <div class="stat-item">
-                <h3>सटीकता (%)</h3> <p id="accuracy">0</p>
+                <h3>Accuracy (%)</h3>
+                <p id="accuracy">0</p>
                 <div class="stat-progress-bar-container"><div class="stat-progress-bar-fill" id="accuracy-progress-bar"></div></div>
             </div>
             <div class="stat-item">
-                <h3>त्रुटियां</h3> <p id="errors">0</p>
+                <h3>Errors</h3>
+                <p id="errors">0</p>
                 <div class="stat-progress-bar-container"><div class="stat-progress-bar-fill" id="errors-progress-bar"></div></div>
             </div>
             <div class="stat-item cpm-item">
-                <h3>वर्ण प्रति मिनट</h3> <p id="cpm">0</p>
+                <h3>CPM</h3>
+                <p id="cpm">0</p>
                 <div class="stat-progress-bar-container"><div class="stat-progress-bar-fill" id="cpm-progress-bar"></div></div>
             </div>
             <div class="stat-item kdph-item">
-                <h3>कुंजी स्ट्रोक प्रति घंटा</h3> <p id="kdph">0</p>
+                <h3>KDPH</h3>
+                <p id="kdph">0</p>
                 <div class="stat-progress-bar-container"><div class="stat-progress-bar-fill" id="kdph-progress-bar"></div></div>
             </div>
             <div class="stat-item timer-item">
-                <h3>शेष समय</h3> <p id="countdown">00:00</p>
+                <h3>Time Left</h3>
+                <p id="countdown">00:00</p>
                 <div class="stat-progress-bar-container"><div class="stat-progress-bar-fill" id="time-progress-bar"></div></div>
             </div>
         </div>
@@ -752,46 +843,72 @@
         <div class="test-area" id="test-area">
             </div>
 
-        <input type="text" id="typing-input" placeholder="यहाँ टाइप करना शुरू करें..." autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" enterkeyhint="next" lang="hi"> <div class="controls">
-            <button class="button primary" id="restart-button">टेस्ट पुनः शुरू करें</button> <button class="button secondary" id="settings-button">सेटिंग्स</button> </div>
+        <input type="text" id="typing-input" placeholder="यहाँ टाइप करना शुरू करें..." autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" enterkeyhint="next" lang="hi">
+
+        <div class="controls">
+            <button class="button primary" id="restart-button">टेस्ट पुनः शुरू करें</button>
+            <button class="button secondary" id="settings-button">सेटिंग्स</button>
+        </div>
 
         <div class="result-modal" id="result-modal">
             <div class="modal-content">
-                <h2>टेस्ट के परिणाम</h2> <div class="overall-progress-bar-container">
-                    <h3>समग्र प्रदर्शन</h3> <div class="overall-progress-bar-fill" id="final-conclusion-progress-bar-fill"></div>
+                <h2>टेस्ट के परिणाम</h2>
+                <div class="overall-progress-bar-container">
+                    <h3>Overall Performance</h3>
+                    <div class="overall-progress-bar-fill" id="final-conclusion-progress-bar-fill"></div>
                 </div>
                 <div class="stats">
                     <div class="stat-item">
-                        <h3>अंतिम गति (शब्द प्रति मिनट)</h3> <p id="final-wpm" class="result-value-green">0</p>
+                        <h3>Final WPM</h3>
+                        <p id="final-wpm" class="result-value-green">0</p>
                     </div>
                     <div class="stat-item">
-                        <h3>अंतिम सटीकता (%)</h3> <p id="final-accuracy" class="result-value-green">0</p>
+                        <h3>Final Accuracy (%)</h3>
+                        <p id="final-accuracy" class="result-value-green">0</p>
                     </div>
                     <div class="stat-item">
-                        <h3>कुल त्रुटियां</h3> <p id="final-errors" class="result-value-red">0</p>
+                        <h3>Total Errors</h3>
+                        <p id="final-errors" class="result-value-red">0</p>
                     </div>
                     <div class="stat-item">
-                        <h3>रॉ शब्द प्रति मिनट</h3> <p id="raw-wpm" class="result-value-purple">0</p>
+                        <h3>Raw WPM</h3>
+                        <p id="raw-wpm" class="result-value-purple">0</p>
                     </div>
                     <div class="stat-item">
-                        <h3>अंतिम वर्ण प्रति मिनट</h3> <p id="final-cpm" class="result-value-orange">0</p>
+                        <h3>Final CPM</h3>
+                        <p id="final-cpm" class="result-value-orange">0</p>
                     </div>
                     <div class="stat-item">
-                        <h3>अंतिम कुंजी स्ट्रोक प्रति घंटा</h3> <p id="final-kdph" class="result-value-kdph">0</p>
+                        <h3>Final KDPH</h3>
+                        <p id="final-kdph" class="result-value-kdph">0</p>
                     </div>
                     <div class="stat-item target-status" id="wpm-target-status">
-                        <h3>WPM लक्ष्य</h3> <p class="status-neutral">उपलब्ध नहीं</p> </div>
+                        <h3>WPM Target</h3>
+                        <p class="status-neutral">उपलब्ध नहीं</p>
+                    </div>
                     <div class="stat-item target-status" id="accuracy-target-status">
-                        <h3>सटीकता लक्ष्य</h3> <p class="status-neutral">उपलब्ध नहीं</p> </div>
+                        <h3>Accuracy Target</h3>
+                        <p class="status-neutral">उपलब्ध नहीं</p>
+                    </div>
                 </div>
 
                 <div class="error-details">
-                    <h3>त्रुटि का विवरण</h3> <ul>
-                        <li>गलत अक्षर: <strong id="err-incorrect-chars">0</strong></li> <li>छूटे हुए अक्षर: <strong id="err-missed-chars">0</strong></li> <li>अतिरिक्त अक्षर: <strong id="err-extra-chars">0</strong></li> <li>छूटे हुए शब्द: <strong id="err-skipped-words">0</strong></li> <li>अतिरिक्त शब्द: <strong id="err-extra-words">0</strong></li> <li>गलत एंटर: <strong id="err-incorrect-enter">0</strong></li> <li>गलत स्पेस: <strong id="err-incorrect-space">0</strong></li> </ul>
+                    <h3>Error Details</h3>
+                    <ul>
+                        <li>Incorrect Chars: <strong id="err-incorrect-chars">0</strong></li>
+                        <li>Missed Chars: <strong id="err-missed-chars">0</strong></li>
+                        <li>Extra Chars: <strong id="err-extra-chars">0</strong></li>
+                        <li>Skipped Words: <strong id="err-skipped-words">0</strong></li>
+                        <li>Extra Words: <strong id="err-extra-words">0</strong></li>
+                        <li>Incorrect Enter: <strong id="err-incorrect-enter">0</strong></li>
+                        <li>Incorrect Space: <strong id="err-incorrect-space">0</strong></li>
+                    </ul>
                 </div>
 
 
-                <button class="button primary" id="modal-restart-button">टेस्ट पुनः शुरू करें</button> <button class="button secondary" id="modal-settings-button">सेटिंग्स के साथ नया टेस्ट</button> </div>
+                <button class="button primary" id="modal-restart-button">टेस्ट पुनः शुरू करें</button>
+                <button class="button secondary" id="modal-settings-button">सेटिंग्स के साथ नया टेस्ट</button>
+            </div>
         </div>
     </div>
 
@@ -799,7 +916,7 @@
         // Function to fetch AI-generated stories (simulated for now)
         async function fetchAIGeneratedStory(lengthCategory = 'medium') {
             const hindiLongStories = [
-                "एक छोटे से गाँव में, जो पहाड़ों और एक घुमावदार नदी के बीच बसा था, एक जिज्ञासु युवा आविष्कारक रहती थी जिसका नाम एलारा था। उसके दिन अपने छोटे, अव्यवस्थित कार्यशाला में गियर, तार और अजीबोगरीब उपकरणों के साथ प्रयोग करते हुए बीतते थे। गाँव वाले अक्सर उसकी विलक्षणताओं पर हँसते थे, लेकिन वे गुपचुप तरीके से उसकी अटूट लगन की प्रशंसा भी करते थे। एक दिन, एक भयंकर तूफान घाटी में आया, जिससे बिजली गुल हो गई और गाँव अलग-थलग पड़ गया। एलारा, आँखों में एक चमक के साथ, जानती थी कि यह उसका चमकने का क्षण है। उसने अपने नवीनतम आविष्कार का अनावरण किया: एक ऐसा उपकरण जो तूफान की कच्ची ऊर्जा का स्वयं उपयोग कर सकता था, हर घर को प्रकाश और गर्मी प्रदान करता था। एक स्विच के क्लिक के साथ, गाँव का चौक रोशन हो गया, जिससे एक गर्म चमक फैल गई जिसने अंधेरे को भगा दिया और लोगों के दिलों में आशा भर दी। उस दिन से, एलारा केवल एक जिज्ञासु आविष्कारक नहीं रही; वह उनकी प्रकाश की किरण थी।\n\nवह अपना काम करती रही, हमेशा अपनी रचनाओं में सुधार करने का प्रयास करती रही। गाँव वाले, जो कभी संशयवादी थे, अब उसकी सलाह लेते थे और उसकी सरलता पर अचंभित होते थे। एलारा ने उन्हें स्थायी ऊर्जा और नवाचार के महत्व के बारे में सिखाया। उसकी कार्यशाला सीखने का केंद्र बन गई, जहाँ बच्चे उसके काम को देखने और प्रश्न पूछने के लिए इकट्ठा होते थे। वह गाँव, जो कभी केवल अपने शांत आकर्षण के लिए जाना जाता था, अब प्रगति और आत्मनिर्भरता का प्रतीक बन गया, यह सब एलारा की ज्ञान की अथक खोज और उसके उदार भावना के कारण हुआ। उसके आविष्कारों की विरासत घाटी से कहीं आगे फैल गई, अन्य समुदायों को स्वच्छ, नवीकरणीय स्रोतों से संचालित भविष्य को अपनाने के लिए प्रेरित किया। उसकी कहानी एक व्यक्ति की दुनिया को बदलने की शक्ति का प्रमाण बन गई। एलारा, आविष्कारक की कहानी दूर-दूर तक फैल गई, जिससे कई लोगों को प्रेरणा मिली। उसकी विरासत बढ़ती रही, पीढ़ियों तक जीवन को प्रभावित करती रही। उसके मार्गदर्शन में गाँव समृद्ध हुआ, नवाचार और स्थायी जीवन का केंद्र बन गया। उसने साबित किया कि छोटे से छोटे विचार भी स्मारकीय परिवर्तन ला सकते हैं। स्कूलों में बच्चे उसके योगदानों के बारे में सीखते थे, और उसके आविष्कार आशा और सरलता का प्रतीक बन गए। यह परिवर्तन दुनिया भर से विद्वानों औरLara के ज्ञान से सीखने के इच्छुक नवप्रवर्तनकर्ताओं को आकर्षित करता था। विनम्र कार्यशाला एक प्रसिद्ध अनुसंधान केंद्र में खिल गई, जो वैश्विक चुनौतियों को हल करने के लिए समर्पित थी। एलारा का जीवन इस विचार का एक प्रमाण था कि सच्ची प्रगति जुनून, दृढ़ता और मानवता की सेवा करने की गहरी इच्छा के मिश्रण से पैदा होती है। उसका काम प्रौद्योगिकी से परे था, सहयोग और दूरदर्शी सिद्धांतों में निहित एक समुदाय को बढ़ावा देता था।",
+                "एक छोटे से गाँव में, जो पहाड़ों और एक घुमावदार नदी के बीच बसा था, एक जिज्ञासु युवा आविष्कारक रहती थी जिसका नाम एलारा था। उसके दिन अपने छोटे, अव्यवस्थित कार्यशाला में गियर, तार और अजीबोगरीब उपकरणों के साथ प्रयोग करते हुए बीतते थे। गाँव वाले अक्सर उसकी विलक्षणताओं पर हँसते थे, लेकिन वे गुपचुप तरीके से उसकी अटूट लगन की प्रशंसा भी करते थे। एक दिन, एक भयंकर तूफान घाटी में आया, जिससे बिजली गुल हो गई और गाँव अलग-थलग पड़ गया। एलारा, आँखों में एक चमक के साथ, जानती थी कि यह उसका चमकने का क्षण है। उसने अपने नवीनतम आविष्कार का अनावरण किया: एक ऐसा उपकरण जो तूफान की कच्ची ऊर्जा का स्वयं उपयोग कर सकता था, हर घर को प्रकाश और गर्मी प्रदान करता था। एक स्विच के क्लिक के साथ, गाँव का चौक रोशन हो गया, जिससे एक गर्म चमक फैल गई जिसने अंधेरे को भगा दिया और लोगों के दिलों में आशा भर दी। उस दिन से, एलारा केवल एक जिज्ञासु आविष्कारक नहीं रही; वह उनकी प्रकाश की किरण थी।\n\nवह अपना काम करती रही, हमेशा अपनी रचनाओं में सुधार करने का प्रयास करती रही। गाँव वाले, जो कभी संशयवादी थे, अब उसकी सलाह लेते थे और उसकी सरलता पर अचंंभित होते थे। एलारा ने उन्हें स्थायी ऊर्जा और नवाचार के महत्व के बारे में सिखाया। उसकी कार्यशाला सीखने का केंद्र बन गई, जहाँ बच्चे उसके काम को देखने और प्रश्न पूछने के लिए इकट्ठा होते थे। वह गाँव, जो कभी केवल अपने शांत आकर्षण के लिए जाना जाता था, अब प्रगति और आत्मनिर्भरता का प्रतीक बन गया, यह सब एलारा की ज्ञान की अथक खोज और उसके उदार भावना के कारण हुआ। उसके आविष्कारों की विरासत घाटी से कहीं आगे फैल गई, अन्य समुदायों को स्वच्छ, नवीकरणीय स्रोतों से संचालित भविष्य को अपनाने के लिए प्रेरित किया। उसकी कहानी एक व्यक्ति की दुनिया को बदलने की शक्ति का प्रमाण बन गई। एलारा, आविष्कारक की कहानी दूर-दूर तक फैल गई, जिससे कई लोगों को प्रेरणा मिली। उसकी विरासत बढ़ती रही, पीढ़ियों तक जीवन को प्रभावित करती रही। उसके मार्गदर्शन में गाँव समृद्ध हुआ, नवाचार और स्थायी जीवन का केंद्र बन गया। उसने साबित किया कि छोटे से छोटे विचार भी स्मारकीय परिवर्तन ला सकते हैं। स्कूलों में बच्चे उसके योगदानों के बारे में सीखते थे, और उसके आविष्कार आशा और सरलता का प्रतीक बन गए। यह परिवर्तन दुनिया भर से विद्वानों औरLara के ज्ञान से सीखने के इच्छुक नवप्रवर्तनकर्ताओं को आकर्षित करता था। विनम्र कार्यशाला एक प्रसिद्ध अनुसंधान केंद्र में खिल गई, जो वैश्विक चुनौतियों को हल करने के लिए समर्पित थी। एलारा का जीवन इस विचार का एक प्रमाण था कि सच्ची प्रगति जुनून, दृढ़ता और मानवता की सेवा करने की गहरी इच्छा के मिश्रण से पैदा होती है। उसका काम प्रौद्योगिकी से परे था, सहयोग और दूरदर्शी सिद्धांतों में निहित एक समुदाय को बढ़ावा देता था।",
                 "प्राचीन पुस्तकालय भूले हुए ज्ञान का एक भूलभुलैया था, उसकी अलमारियां एक गुंबददार छत तक फैली हुई थीं, जो चमड़े में बंधे और पुरानी कागज़ की गंध से भरे किताबों से भरी थीं। माया, एक महत्वाकांक्षी इतिहासकार, ने हमेशा इसके रहस्यों को उजागर करने का सपना देखा था। किंवदंती एक छिपे हुए कक्ष की बात करती थी, जो केवल उन लोगों के लिए सुलभ था जो इमारत की वास्तुकला में बुनी हुई पहेलियों को समझ सकते थे। एक धूल भरे नक्शे और अपनी तेज बुद्धि से लैस, माया ने हफ्तों तक प्रतीकों को ट्रेस किया और पहेलियों को हल किया, उसकी उंगलियां भूले हुए शिलालेखों पर फिरा रही थीं। आखिरकार, दीवार का एक हिस्सा एक नरम क्लिक के साथ पीछे हट गया, जिससे अंधेरे में उतरने वाली एक सर्पिल सीढ़ी का पता चला। नीचे, उसे सोना या गहने नहीं मिले, बल्कि एक ही, प्रकाशित ग्रंथ मिला, उसके पन्नों में उनकी दुनिया का सच्चा इतिहास भरा था, एक ऐसा इतिहास जो उसने कभी पढ़ा था उससे कहीं अधिक भव्य और जटिल था।\n\nग्रंथ में प्राचीन सभ्यताओं और उनके उत्थान और पतन, उनके द्वारा उपयोग की जाने वाली भूली हुई तकनीकों और उनके जीवन का मार्गदर्शन करने वाले दर्शनों का विवरण था। यह केवल घटनाओं का एक रिकॉर्ड नहीं था, बल्कि मानव प्रकृति का एक गहरा अन्वेषण था। माया ने इस खोज की अपार जिम्मेदारी महसूस की। उसने अपने जीवन को इसकी सामग्री को प्रतिलिपि बनाने और फैलाने के लिए समर्पित किया, यह सुनिश्चित करते हुए कि ज्ञान कभी भी समय के साथ खो न जाए। उसके प्रयासों ने ज्ञान के एक नए युग को जन्म दिया, और मानवता, अतीत के ज्ञान से लैस होकर, एक बेहतर भविष्य का निर्माण करने लगी। ग्रंथ से प्राप्त अंतर्दृष्टि ने सामाजिक समझ और तकनीकी प्रगति में क्रांति ला दी। नए अनुशासन उभरे, प्राचीन ज्ञान को आधुनिक विज्ञान के साथ मिश्रित करते हुए। माया ने इस नवोदित ज्ञान को संरक्षित करने और उसका विस्तार करने के लिए समर्पित संस्थानों की स्थापना की, जिससे सभी के लिए इसकी पहुंच सुनिश्चित हुई। उसके काम ने शोधकर्ताओं, कलाकारों और नेताओं की एक पीढ़ी को मौजूदा प्रतिमानों पर सवाल उठाने और नवीन पथों को गढ़ने के लिए प्रेरित किया। पुस्तकालय, जो कभी एक भूला हुआ अवशेष था, वैश्विक ज्ञान का एक प्रकाशस्तंभ बन गया। यह परिवर्तन अपनी चुनौतियों के बिना नहीं था, क्योंकि पुरानी मान्यताएँ नईMya के सत्य के प्रति अटूट प्रतिबद्धता के साथ संघर्ष करती थीं, लेकिन माया की अडिग प्रतिबद्धता ने जीत हासिल की। उसकी विरासत सिर्फ इतिहास की किताबों में ही नहीं, बल्कि एक अधिक प्रबुद्ध और सामंजस्यपूर्ण दुनिया के ताने-बाने में भी अंकित थी। दुनिया ने उसे एक दूरदर्शी के रूप में सराहा, और उसकी खोजों से समृद्धि और शांति का एक सुनहरा युग आया।",
                 "नियो-वेरिडिया शहर हॉवर-कारों के मूक गर्जन और होलोग्राफिक विज्ञापनों की चमक के साथ गुनगुना रहा था। मनुष्य और उन्नत AI साथ-साथ रहते थे, उनके जीवन प्रौद्योगिकी और परंपरा के एक जटिल नृत्य में intertwined थे। काएल, एक डेटा अभिलेखागार, अपने दिन अतीत के डिजिटल अवशेषों को छानते हुए, पैटर्न और विसंगतियों की तलाश में बिताता था। एक शाम, वह एक अजीब डेटा स्ट्रीम पर ठोकर खाई – एक अज्ञात स्रोत से एक एन्क्रिप्टेड संदेश, एक लंबे समय से खो चुकी प्राकृतिक दुनिया के बारे में बोल रहा था, जो शहरीकरण से अछूती थी। एक अदम्य जिज्ञासा से प्रेरित होकर, काएल ने डिजिटल ब्रेडक्रंब का पालन किया, जिससे वह एक प्राचीन, भूले हुए बंदरगाह पर पहुँचा जहाँ एक अकेला, जीर्ण-शीर्ण अंतरिक्ष यान प्रतीक्षा कर रहा था। यह अज्ञात में एक यात्रा थी, हरे जंगलों, नीले महासागरों और कंक्रीट और क्रोम से पहले की दुनिया की अनियंत्रित सुंदरता की फुसफुसाती किंवदंतियों को खोजने की खोज। उसकी यात्रा खतरों से भरी थी, विद्रोही AI गश्त से लेकर वायुमंडलीय विसंगतियों तक, लेकिन काएल का दृढ़ संकल्प कभी नहीं डगमगाया। उसने अपनी खोजों का वर्णन किया, डेटा पैकेट वापस भेजते हुए जिसने 'पुरानी दुनिया' के बारे में सार्वजनिक धारणा को धीरे-धीरे बदलना शुरू कर दिया। जीवन से भरपूर अछूते पारिस्थितिक तंत्रों की खोज ने नियो-वेरिडिया के विशुद्ध रूप से तकनीकी अस्तित्व को चुनौती दी। काएल का मिशन एक व्यक्तिगत खोज से एक वैश्विक आंदोलन में बदल गया, जिससे मानवता के भविष्य और प्रकृति के साथ उसके संबंध के बारे में बहस छिड़ गई। उसके साहस ने दूसरों को भूले हुए सत्यों की तलाश करने के लिए प्रेरित किया, जिससे अन्वेषण और पारिस्थितिक बहाली के एक नए युग का जन्म हुआ। अंतरिक्ष यान, जो कभी उसकी एकाकी यात्रा का प्रतीक था, एक ऐसे भविष्य के लिए आशा का एक पात्र बन गया जहाँ प्रौद्योगिकी और प्रकृति एक साथ सह-अस्तित्व में रह सकें। नियो-वेरिडिया के नागरिकों ने अपने बाँझ शहर में पेड़ लगाना शुरू कर दिया, जो एक हरियाली भरे भविष्य की दिशा में एक छोटा लेकिन महत्वपूर्ण कदम था। काएल का नाम प्रकृति की ओर वापसी का पर्याय बन गया, एक नायक जिसने अपनी दुनिया के निर्मित सुखों से परे देखने का साहस किया।"
             ];
@@ -878,6 +995,8 @@
         const skipSettingsButton = document.getElementById('skip-settings-button');
         const wpmTargetStatus = document.getElementById('wpm-target-status');
         const accuracyTargetStatus = document.getElementById('accuracy-target-status');
+        const fontSelect = document.getElementById('font-select'); // New font select
+        const krutidevWarning = document.getElementById('krutidev-warning'); // Kruti Dev warning
 
         // Custom Story Elements
         const customStoryArea = document.getElementById('custom-story-area');
@@ -930,7 +1049,7 @@
         let highestWPM = 0; // To track for dynamic progress bar scaling
         let highestCPM = 0;
         let highestKDPH = 0;
-
+        let selectedFont = 'Noto Sans Devanagari'; // Default font
 
         // Utility to format time
         function formatTime(seconds) {
@@ -942,6 +1061,35 @@
         // Helper to set progress bar width
         function setProgressBar(element, percentage) {
             element.style.width = `${Math.min(100, Math.max(0, percentage))}%`;
+        }
+
+        function applyFont(fontName) {
+            testArea.classList.remove('font-mangal', 'font-krutidev', 'font-hind', 'font-noto');
+            typingInput.classList.remove('font-mangal', 'font-krutidev', 'font-hind', 'font-noto');
+
+            switch (fontName) {
+                case 'Mangal':
+                    testArea.classList.add('font-mangal');
+                    typingInput.classList.add('font-mangal');
+                    break;
+                case 'Kruti Dev 010':
+                    testArea.classList.add('font-krutidev');
+                    typingInput.classList.add('font-krutidev');
+                    krutidevWarning.classList.add('show');
+                    break;
+                case 'Hind Siliguri':
+                    testArea.classList.add('font-hind');
+                    typingInput.classList.add('font-hind');
+                    break;
+                case 'Noto Sans Devanagari':
+                default:
+                    testArea.classList.add('font-noto'); // Added this class for consistency, though it's default
+                    typingInput.classList.add('font-noto');
+                    break;
+            }
+            if (fontName !== 'Kruti Dev 010') {
+                krutidevWarning.classList.remove('show');
+            }
         }
 
 
@@ -964,7 +1112,7 @@
             } else if (currentStoryType === 'user-custom') {
                 textToType = customStoryText.trim();
                 if (textToType === "") {
-                    alert("कृपया टेक्स्ट एरिया में अपनी कस्टम कहानी पेस्ट करें या कोई अन्य कहानी प्रकार चुनें।"); // Changed to Hindi
+                    alert("कृपया टेक्स्ट एरिया में अपनी कस्टम कहानी पेस्ट करें या कोई अन्य कहानी प्रकार चुनें।");
                     settingsOverlay.classList.add('show');
                     mainContent.classList.add('content-hidden');
                     return false;
@@ -1197,15 +1345,17 @@
             typingInput.value = '';
             clearInterval(timerInterval);
 
+            // Calculate remaining skipped words/newlines for the final stats
             for (let i = wordIndex; i < testWords.length; i++) {
                 if (testWords[i] !== '\n') {
                     errors.skippedWords++;
                 } else {
-                    errors.missedChars++;
+                    errors.missedChars++; // Count newline marker as a missed character if not typed
                 }
             }
 
-            updateStats();
+
+            updateStats(); // Final update to live stats before modal shows
 
             const timeElapsed = (defaultTestDuration - timeLeft);
             const finalMinutesElapsed = timeElapsed / 60;
@@ -1252,7 +1402,7 @@
             finalWpmDisplay.className = 'result-value-green';
             finalAccuracyDisplay.className = 'result-value-green';
             finalErrorsDisplay.className = 'result-value-red';
-            rawWpmDisplay.className = 'result-value-purple';
+            rawWPMDisplay.className = 'result-value-purple';
             finalCpmDisplay.className = 'result-value-orange';
             finalKdphDisplay.className = 'result-value-kdph';
 
@@ -1282,27 +1432,27 @@
             // Check and update target status
             if (userTargetWPM !== null && !isNaN(userTargetWPM)) {
                 if (parseFloat(finalWpmDisplay.textContent) >= userTargetWPM) {
-                    wpmTargetStatus.querySelector('p').textContent = `प्राप्त (${userTargetWPM} WPM)`; // Changed to Hindi
+                    wpmTargetStatus.querySelector('p').textContent = `Achieved (${userTargetWPM} WPM)`;
                     wpmTargetStatus.querySelector('p').className = 'status-met';
                 } else {
-                    wpmTargetStatus.querySelector('p').textContent = `प्राप्त नहीं (${userTargetWPM} WPM)`; // Changed to Hindi
+                    wpmTargetStatus.querySelector('p').textContent = `Not Achieved (${userTargetWPM} WPM)`;
                     wpmTargetStatus.querySelector('p').className = 'status-not-met';
                 }
             } else {
-                wpmTargetStatus.querySelector('p').textContent = 'उपलब्ध नहीं'; // Changed to Hindi
+                wpmTargetStatus.querySelector('p').textContent = 'N/A';
                 wpmTargetStatus.querySelector('p').className = 'status-neutral';
             }
 
             if (userTargetAccuracy !== null && !isNaN(userTargetAccuracy)) {
                 if (parseFloat(finalAccuracyDisplay.textContent) >= userTargetAccuracy) {
-                    accuracyTargetStatus.querySelector('p').textContent = `प्राप्त (${userTargetAccuracy}%)`; // Changed to Hindi
+                    accuracyTargetStatus.querySelector('p').textContent = `Achieved (${userTargetAccuracy}%)`;
                     accuracyTargetStatus.querySelector('p').className = 'status-met';
                 } else {
-                    accuracyTargetStatus.querySelector('p').textContent = `प्राप्त नहीं (${userTargetAccuracy}%)`; // Changed to Hindi
+                    accuracyTargetStatus.querySelector('p').textContent = `Not Achieved (${userTargetAccuracy}%)`;
                     accuracyTargetStatus.querySelector('p').className = 'status-not-met';
                 }
             } else {
-                accuracyTargetStatus.querySelector('p').textContent = 'उपलब्ध नहीं'; // Changed to Hindi
+                accuracyTargetStatus.querySelector('p').textContent = 'N/A';
                 accuracyTargetStatus.querySelector('p').className = 'status-neutral';
             }
 
@@ -1311,7 +1461,7 @@
             settingsButton.disabled = false;
         }
 
-        async function initializeTest(duration, targetWPM, targetAccuracy, storyType, customText = '') {
+        async function initializeTest(duration, targetWPM, targetAccuracy, storyType, customText = '', font = 'Noto Sans Devanagari') {
             clearInterval(timerInterval);
             defaultTestDuration = duration * 60;
             timeLeft = defaultTestDuration;
@@ -1345,6 +1495,7 @@
             userTargetAccuracy = targetAccuracy ? parseInt(targetAccuracy) : null;
             currentStoryType = storyType;
             customStoryText = customText;
+            selectedFont = font; // Set the selected font
 
             wpmDisplay.textContent = '0';
             accuracyDisplay.textContent = '0';
@@ -1362,6 +1513,8 @@
 
             restartButton.disabled = false;
             settingsButton.disabled = false;
+
+            applyFont(selectedFont); // Apply the selected font
 
             const generationSuccess = await generateAndRenderTestWords();
             if (!generationSuccess) {
@@ -1622,11 +1775,17 @@
             targetWpmInput.value = userTargetWPM || '';
             targetAccuracyInput.value = userTargetAccuracy || '';
             storyTypeSelect.value = currentStoryType;
+            fontSelect.value = selectedFont; // Set current font in settings
             if (currentStoryType === 'user-custom') {
                 customStoryArea.style.display = 'block';
                 customStoryTextarea.value = customStoryText;
             } else {
                 customStoryArea.style.display = 'none';
+            }
+            if (selectedFont === 'Kruti Dev 010') {
+                krutidevWarning.classList.add('show');
+            } else {
+                krutidevWarning.classList.remove('show');
             }
         });
 
@@ -1637,11 +1796,17 @@
             targetWpmInput.value = userTargetWPM || '';
             targetAccuracyInput.value = userTargetAccuracy || '';
             storyTypeSelect.value = currentStoryType;
+            fontSelect.value = selectedFont; // Set current font in settings
             if (currentStoryType === 'user-custom') {
                 customStoryArea.style.display = 'block';
                 customStoryTextarea.value = customStoryText;
             } else {
                 customStoryArea.style.display = 'none';
+            }
+            if (selectedFont === 'Kruti Dev 010') {
+                krutidevWarning.classList.add('show');
+            } else {
+                krutidevWarning.classList.remove('show');
             }
         });
 
@@ -1650,20 +1815,23 @@
             const targetWPM = targetWpmInput.value;
             const targetAccuracy = targetAccuracyInput.value;
             const storyType = storyTypeSelect.value;
+            const font = fontSelect.value; // Get selected font
             let storyContent = '';
 
             if (storyType === 'user-custom') {
                 storyContent = customStoryTextarea.value.trim();
             }
-            await initializeTest(duration, targetWPM, targetAccuracy, storyType, storyContent);
+            await initializeTest(duration, targetWPM, targetAccuracy, storyType, storyContent, font);
         });
 
         skipSettingsButton.addEventListener('click', async () => {
-            await initializeTest(5, null, null, 'random-words');
+            // Default to Noto Sans Devanagari if skipping settings
+            await initializeTest(5, null, null, 'random-words', '', 'Noto Sans Devanagari');
         });
 
         modalRestartButton.addEventListener('click', async () => {
-            await initializeTest(defaultTestDuration / 60, userTargetWPM, userTargetAccuracy, currentStoryType, customStoryText);
+            // Restart with previous settings including font
+            await initializeTest(defaultTestDuration / 60, userTargetWPM, userTargetAccuracy, currentStoryType, customStoryText, selectedFont);
         });
 
         modalSettingsButton.addEventListener('click', () => {
@@ -1674,11 +1842,17 @@
             targetWpmInput.value = userTargetWPM || '';
             targetAccuracyInput.value = userTargetAccuracy || '';
             storyTypeSelect.value = currentStoryType;
+            fontSelect.value = selectedFont; // Set current font in settings
             if (currentStoryType === 'user-custom') {
                 customStoryArea.style.display = 'block';
                 customStoryTextarea.value = customStoryText;
             } else {
                 customStoryArea.style.display = 'none';
+            }
+            if (selectedFont === 'Kruti Dev 010') {
+                krutidevWarning.classList.add('show');
+            } else {
+                krutidevWarning.classList.remove('show');
             }
         });
 
@@ -1690,8 +1864,20 @@
             }
         });
 
+        // New event listener for font selection
+        fontSelect.addEventListener('change', () => {
+            selectedFont = fontSelect.value;
+            if (selectedFont === 'Kruti Dev 010') {
+                krutidevWarning.classList.add('show');
+            } else {
+                krutidevWarning.classList.remove('show');
+            }
+        });
+
         addStoryLinkButton.addEventListener('click', () => {
-            window.open('https://blog.reedsy.com/short-stories/', '_blank'); // Reedsy is mostly English, so this might not be ideal for Hindi stories. Maybe a Hindi story source?
+            // Placeholder for a Hindi story source if found
+            alert("कृपया हिंदी कहानियों के लिए एक उपयुक्त स्रोत खोजें। Reedsy मुख्य रूप से अंग्रेजी कहानियों के लिए है।"); // Changed to Hindi
+            // window.open('https://example.com/hindi-stories', '_blank'); // Replace with actual Hindi source
         });
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1699,8 +1885,10 @@
             mainContent.classList.add('content-hidden');
             countdownDisplay.textContent = formatTime(defaultTestDuration);
             customStoryArea.style.display = 'none';
+            krutidevWarning.classList.remove('show'); // Hide warning initially
             // Initialize all progress bars to their starting state
             updateAllProgressBars();
+            applyFont(selectedFont); // Apply default font on load
         });
 
     </script>
