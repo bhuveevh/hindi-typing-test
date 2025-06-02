@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="hi"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // Check if the page is loaded inside an iframe
+        if (window.self !== window.top) {
+            // If inside an iframe, force a desktop-like viewport width
+            // This will make the content inside the iframe render as if on a desktop
+            const viewportMeta = document.querySelector('meta[name="viewport"]');
+            if (viewportMeta) {
+                // You can experiment with different fixed widths (e.g., 992px, 1024px)
+                // 992px is a common breakpoint for desktop views in many responsive frameworks
+                viewportMeta.setAttribute('content', 'width=1200, initial-scale=0.8');
+                // You might need to adjust initial-scale based on your design and desired zoom
+            }
+        }
+    </script>
+    <title>हिंदी टाइपिंग टेस्ट टूल</title> <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Source+Code+Pro:wght@400;700&family=Open+Sans:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Basic Reset & Font Imports */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans Devanagari', 'Roboto', sans-serif; /* Added Hindi Font */
+            background-color: #e3f2fd; /* Light Blue background */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align at the top */
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(to right, #e3f2fd, #fce4ec); /* Light Blue to Light Pink Gradient */
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 16px; /* Slightly more rounded */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+            width: 100%;
+            max-width: 900px;
+            animation: fadeIn 0.8s ease-out;
+            border: 1px solid #bbdefb; /* Light blue border */
+            position: relative; /* For z-index to work with settings overlay */
+            z-index: 1; /* Ensure container is above other elements when settings are hidden */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* H1 स्टाइल को बरकरार रखा गया है, भले ही HTML में कोई H1 टैग न हो */
+        h1 {
+            text-align: center;
+            color: #e91e63; /* Pink primary color */
+            margin-bottom: 25px;
+            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* Added Hindi Font */
+            font-size: 2.5em; /* Larger title */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        /* Live Stats Area */
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px; /* Space below stats */
+            flex-wrap: wrap;
+            gap: 15px;
+            background-color: #fce4ec; /* Light pink background */
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-item {
+            background-color: #fff;
+            padding: 12px 18px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            min-width: 120px;
+            flex: 1;
+            border: 1px solid #f8bbd0; /* Slightly darker pink border */
+            position: relative; /* For the mini progress bars */
+            overflow: hidden; /* To keep progress bar within bounds */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .stat-item h3 {
+            color: #673ab7; /* Deep purple for sub-headers */
+            font-size: 1em;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .stat-item p {
+            font-size: 1.8em; /* Slightly smaller for compactness */
+            font-weight: bold;
+            color: #e91e63; /* Pink for values */
+            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* Added Hindi Font */
+            margin-bottom: 8px; /* Space above mini progress bar */
+        }
+
+        .timer-item p {
+            color: #2196f3; /* Blue for timer */
+        }
+
+        .cpm-item p {
+            color: #ff9800; /* Orange for CPM */
+        }
+
+        .kdph-item p {
+            color: #8bc34a; /* Light green for KDPH */
+        }
+
+        /* New: Mini Progress Bars for each stat */
+        .stat-progress-bar-container {
+            width: 100%;
+            height: 6px; /* Height of the mini bar */
+            background-color: #e0e0e0; /* Grey background for empty part */
+            border-radius: 3px; /* Slightly rounded corners */
+            overflow: hidden; /* Ensure inner bar stays within rounded corners */
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        .stat-progress-bar-fill {
+            height: 100%;
+            width: 0%; /* Initial width */
+            transition: width 0.3s ease-out; /* Smooth transition for width */
+            background-color: #673ab7; /* Deep Purple for all progress bars */
+        }
+
+        /* Main Result Conclusion Progress Bar (below stats in modal) */
+        .overall-progress-bar-container {
+            width: 100%;
+            height: 15px; /* Height of the bar */
+            background-color: #e0e0e0; /* Grey background for empty part */
+            border-radius: 8px; /* Rounded corners */
+            margin-top: 15px; /* Space above bar in modal */
+            margin-bottom: 20px; /* Space below bar in modal */
+            overflow: hidden; /* Ensure inner bar stays within rounded corners */
+        }
+
+        .overall-progress-bar-fill {
+            height: 100%;
+            width: 0%; /* Initial width */
+            border-radius: 8px; /* Match container corners */
+            transition: width 0.3s ease-out; /* Smooth transition for width change */
+            background-color: #673ab7; /* Deep Purple for the overall progress bar */
+        }
+
+
+        /* Test Area */
+        .test-area {
+            margin-bottom: 20px; /* Reduced margin */
+            padding: 20px;
+            background-color: #f1f8e9; /* Very light green for contrast */
+            border-radius: 10px;
+            border: 1px solid #dcedc8;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            min-height: 120px; /* Smaller height */
+            max-height: 120px; /* Fixed height for 3 lines */
+            overflow: hidden; /* Hide overflow */
+            position: relative;
+            line-height: 1.8; /* More spacing for readability */
+            font-size: 1.2em; /* Slightly smaller font for more words per line */
+            font-family: 'Noto Sans Devanagari', 'Open Sans', sans-serif; /* Changed to Open Sans for better readability */
+            color: #444;
+        }
+
+        /* For handling paragraphs and line breaks in test-area */
+        .paragraph {
+            margin-bottom: 1.5em; /* Space between paragraphs */
+            white-space: pre-wrap; /* Preserves whitespace and wraps text */
+        }
+
+        .word {
+            display: inline-block;
+            margin-right: 5px;
+            padding: 1px 0;
+            white-space: pre-wrap; /* Ensure words don't break mid-char for spaces */
+        }
+
+        .newline-marker {
+            display: inline-block;
+            width: 20px; /* Width to resemble a small 'enter' key */
+            height: 18px; /* Height */
+            background-color: #cfd8dc; /* Light grey */
+            border-radius: 3px;
+            margin-left: 5px; /* Space from previous word */
+            margin-right: 5px;
+            vertical-align: middle;
+            text-align: center;
+            font-size: 0.8em;
+            color: #607d8b;
+            line-height: 18px; /* Center text vertically */
+            position: relative;
+            top: -2px; /* Adjust vertical position */
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .newline-marker::after {
+            content: "⏎"; /* Enter symbol */
+        }
+
+
+        .current-word {
+            background-color: #fff9c4; /* Light yellow for current word */
+            border-radius: 4px;
+            padding: 1px 5px;
+            box-shadow: 0 0 5px rgba(255, 235, 59, 0.5);
+        }
+        .current-newline-marker {
+            background-color: #fff9c4; /* Match word highlight */
+            border: 1px solid #ffeb3b; /* Stronger border */
+            box-shadow: 0 0 5px rgba(255, 235, 59, 0.5);
+        }
+
+        .correct {
+            color: #388e3c; /* Dark green for correct */
+        }
+
+        .incorrect {
+            color: #d32f2f; /* Dark red for incorrect */
+            text-decoration: underline wavy #d32f2f 2px;
+        }
+
+        .extra {
+            color: #7b7b7b;
+            background-color: #ffebee; /* Very light red background for extra */
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+
+        .untyped {
+            color: #7b7b7b;
+        }
+
+        /* Input Area */
+        #typing-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.5em;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-family: 'Noto Sans Devanagari', 'Source Code Pro', monospace; /* Kept monospace for input */
+            background-color: #fcfcfc;
+            margin-bottom: 20px; /* Space below input */
+        }
+
+        #typing-input:focus {
+            border-color: #2196f3; /* Blue on focus */
+            box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.2);
+        }
+
+        /* Controls */
+        .controls {
+            text-align: center;
+            margin-top: 20px; /* Reduced margin */
+        }
+
+        .button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px; /* Slightly more rounded buttons */
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            margin: 0 10px;
+            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* Added Hindi Font */
+            font-weight: 700;
+        }
+
+        .button.primary {
+            background-color: #e91e63; /* Pink primary */
+            color: white;
+            box-shadow: 0 4px 8px rgba(233, 30, 99, 0.2);
+        }
+
+        .button.primary:hover {
+            background-color: #d81b60; /* Darker pink on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(233, 30, 99, 0.3);
+        }
+
+        .button.secondary {
+            background-color: #2196f3; /* Blue secondary */
+            color: white;
+            box-shadow: 0 4px 8px rgba(33, 150, 243, 0.2);
+        }
+
+        .button.secondary:hover {
+            background-color: #1976d2; /* Darker blue on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Result Modal */
+        .result-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease;
+        }
+
+        .result-modal.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            max-width: 600px; /* Wider modal */
+            width: 90%;
+            border: 1px solid #bbdefb;
+
+            max-height: 90vh; /* Limit height for mobile responsiveness */
+            overflow-y: auto; /* Enable scrolling for overflow */
+        }
+
+        .result-modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content h2 {
+            color: #e91e63;
+            margin-bottom: 25px;
+            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* Added Hindi Font */
+            font-size: 2em;
+        }
+
+        .modal-content .stats {
+            flex-wrap: wrap; /* Ensure wrapping in modal too */
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-content .stat-item {
+            margin-bottom: 15px;
+            background-color: #e3f2fd; /* Light blue in modal stats */
+            border: 1px solid #90caf9;
+        }
+
+        /* Result Colors */
+        .result-value-green {
+            color: #388e3c; /* Green for good results (WPM, Accuracy) */
+        }
+        .result-value-red {
+            color: #d32f2f; /* Red for bad results (Errors) */
+        }
+        .result-value-orange {
+            color: #ff9800; /* Orange for CPM */
+        }
+        .result-value-purple {
+            color: #673ab7; /* Purple for Raw WPM */
+        }
+        .result-value-kdph {
+            color: #8bc34a; /* Light green for KDPH */
+        }
+
+
+        .modal-content .button {
+            margin-top: 25px;
+            margin: 10px; /* Space between modal buttons */
+        }
+
+        /* Target Status in Modal */
+        .stat-item.target-status p {
+            font-size: 1.5em; /* Smaller font for target status */
+        }
+        .status-neutral { color: #607d8b; } /* Grey */
+        .status-met { color: #388e3c; } /* Green */
+        .status-not-met { color: #d32f2f; } /* Red */
+
+
+        /* Detailed Error Stats in Modal */
+        .error-details {
+            margin-top: 20px;
+            text-align: left;
+            background-color: #ffebee; /* Light red background for error section */
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ef9a9a;
+        }
+
+        .error-details h3 {
+            color: #d32f2f;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .error-details ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px 20px; /* Row and column gap */
+        }
+
+        .error-details li {
+            font-size: 1em;
+            color: #424242;
+            flex-basis: 45%; /* Two columns */
+            white-space: nowrap; /* Prevent wrapping for each stat */
+        }
+
+        .error-details li strong {
+            color: #d32f2f;
+            margin-left: 5px;
+        }
+
+
+        /* Settings Overlay (Full-screen) */
+        .settings-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); /* Darker, more opaque background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001; /* Higher z-index than container and result modal */
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.4s ease, opacity 0.4s ease;
+        }
+
+        .settings-overlay.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .settings-overlay .settings-content {
+            background-color: #f0f4c3; /* Light yellow-green for settings */
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid #cddc39;
+            transform: scale(0.9);
+            transition: transform 0.4s ease;
+
+            /* Fix for overflow on settings screen */
+            max-height: 90vh; /* Limit height to 90% of viewport height */
+            overflow-y: auto; /* Enable vertical scrolling if content overflows */
+        }
+
+        .settings-overlay.show .settings-content {
+            transform: scale(1);
+        }
+
+        .settings-overlay h2 {
+            color: #4CAF50; /* Green for settings header */
+            margin-bottom: 30px;
+            font-family: 'Montserrat', 'Noto Sans Devanagari', sans-serif; /* Added Hindi Font */
+            font-size: 2.2em;
+        }
+
+        .setting-group {
+            margin-bottom: 25px; /* More space between groups */
+            text-align: left;
+        }
+
+        .setting-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px; /* More space below label */
+            color: #388e3c; /* Darker green for setting labels */
+            font-size: 1.15em;
+        }
+
+        .setting-group select,
+        .setting-group input[type="number"] {
+            width: 100%;
+            padding: 12px; /* Larger padding for inputs */
+            border: 1px solid #aed581; /* Greenish border */
+            border-radius: 8px;
+            font-size: 1.1em;
+            background-color: #fff;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-family: 'Noto Sans Devanagari', 'Roboto', sans-serif; /* Added Hindi Font */
+        }
+
+        .setting-group select:focus,
+        .setting-group input[type="number"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.25);
+        }
+
+        /* Custom Story Area styles */
+        #custom-story-area {
+            display: none; /* Hidden by default */
+            margin-top: 20px;
+            border-top: 1px solid #cddc39;
+            padding-top: 20px;
+        }
+
+        #custom-story-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border: 1px solid #aed581;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-family: 'Noto Sans Devanagari', 'Open Sans', sans-serif; /* Added Hindi Font */
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+
+        #custom-story-textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.25);
+        }
+
+        .custom-story-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .custom-story-controls .button {
+            flex-grow: 1; /* Allow buttons to grow */
+            max-width: 48%; /* Adjust for spacing */
+        }
+
+        @media (max-width: 480px) {
+            .custom-story-controls .button {
+                max-width: 100%; /* Stack buttons on very small screens */
+            }
+        }
+
+
+        .settings-overlay .button-group {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* Initial hidden state for the main content */
+        .content-hidden {
+            visibility: hidden;
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+
+            /* H1 स्टाइल यहां भी बरकरार रखा गया है */
+            h1 {
+                font-size: 2em;
+            }
+
+            .stats {
+                gap: 10px;
+            }
+
+            .stat-item {
+                min-width: 100px;
+                padding: 10px 12px;
+            }
+
+            .stat-item p {
+                font-size: 1.5em;
+            }
+
+            .test-area {
+                font-size: 1.1em;
+                padding: 15px;
+                min-height: 100px;
+                max-height: 100px;
+                line-height: 1.6; /* Adjusted line height for mobile */
+            }
+
+            #typing-input {
+                font-size: 1.2em; /* Smaller font for mobile */
+                padding: 10px 15px; /* Smaller padding for mobile */
+            }
+
+            .button {
+                padding: 10px 20px;
+                font-size: 1em;
+                margin: 5px;
+            }
+
+            .modal-content {
+                padding: 25px;
+            }
+
+            .modal-content h2 {
+                font-size: 1.8em;
+            }
+
+            .settings-overlay .settings-content {
+                padding: 25px;
+            }
+            .settings-overlay h2 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+            .setting-group {
+                margin-bottom: 20px;
+            }
+            .settings-overlay .button-group {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .settings-overlay .button {
+                width: 80%; /* Make buttons wider on small screens */
+                margin: 0 auto;
+            }
+
+            .error-details li {
+                flex-basis: 100%; /* Stack error details on small screens */
+                text-align: center;
+            }
+
+            /* Responsive adjustments for modal stats */
+            .modal-content .stat-item {
+                flex-basis: 48%; /* Two columns on mobile */
+                min-width: unset;
+            }
+
+            @media (max-width: 480px) {
+                .modal-content .stat-item {
+                    flex-basis: 100%; /* Stack on very small screens */
+                }
+            }
+        </style>
+</head>
+<body>
+    <div class="settings-overlay" id="settings-overlay">
+        <div class="settings-content">
+            <h2>हिंदी टाइपिंग टेस्ट सेटिंग्स</h2> <div class="setting-group">
+                <label for="test-duration">टेस्ट की अवधि चुनें:</label> <select id="test-duration">
+                    <option value="1">1 मिनट</option>
+                    <option value="2">2 मिनट</option>
+                    <option value="3">3 मिनट</option>
+                    <option value="5" selected>5 मिनट</option>
+                    <option value="10">10 मिनट</option>
+                    <option value="15">15 मिनट</option>
+                    <option value="20">20 मिनट</option>
+                    <option value="30">30 मिनट</option>
+                </select>
+            </div>
+
+            <div class="setting-group">
+                <label for="target-wpm">आपका लक्ष्य WPM (वैकल्पिक):</label> <input type="number" id="target-wpm" min="10" max="200" placeholder="उदा. 40"> </div>
+
+            <div class="setting-group">
+                <label for="target-accuracy">आपकी लक्ष्य सटीकता % (वैकल्पिक):</label> <input type="number" id="target-accuracy" min="50" max="100" placeholder="उदा. 95"> </div>
+
+            <div class="setting-group">
+                <label for="story-type">कहानी का प्रकार:</label> <select id="story-type">
+                    <option value="random-words" selected>यादृच्छिक शब्द (डिफ़ॉल्ट)</option> <option value="ai-story">AI जनित कहानी (Backend की आवश्यकता है)</option> <option value="user-custom">उपयोगकर्ता की अपनी कहानी</option> </select>
+            </div>
+
+            <div id="custom-story-area">
+                <label for="custom-story-textarea">अपनी कहानी यहाँ पेस्ट करें:</label> <textarea id="custom-story-textarea" placeholder="वह पाठ पेस्ट करें जिसे आप यहाँ टाइप करना चाहते हैं..."></textarea> <div class="custom-story-controls">
+                    <button class="button secondary" id="add-story-link-button">Reedsy से कहानी जोड़ें</button> </div>
+            </div>
+
+            <div class="button-group">
+                <button class="button primary" id="save-settings-button">टेस्ट शुरू करें</button> <button class="button secondary" id="skip-settings-button">डिफ़ॉल्ट के साथ शुरू करें</button> </div>
+        </div>
+    </div>
+
+    <div class="container content-hidden" id="main-content">
+        <div class="stats top-stats">
+            <div class="stat-item">
+                <h3>गति (शब्द प्रति मिनट)</h3> <p id="wpm">0</p>
+                <div class="stat-progress-bar-container"><div class="stat-progress-bar-fill" id="wpm-progress-bar"></div></div>
+            </div>
+            <div class="stat-item">
+                <h3>सटीकता (%)</h3> <p id="accuracy">0</p>
+                <div class="stat-progress-bar-container"><div class="stat-progress-bar-fill" id="accuracy-progress-bar"></div></div>
+            </div>
+            <div class="stat-item">
+                <h3>त्रुटियां</h3> <p id="errors">0</p>
+                <div class="stat-progress-bar-container"><div class="stat-progress-bar-fill" id="errors-progress-bar"></div></div>
+            </div>
+            <div class="stat-item cpm-item">
+                <h3>वर्ण प्रति मिनट</h3> <p id="cpm">0</p>
+                <div class="stat-progress-bar-container"><div class="stat-progress-bar-fill" id="cpm-progress-bar"></div></div>
+            </div>
+            <div class="stat-item kdph-item">
+                <h3>कुंजी स्ट्रोक प्रति घंटा</h3> <p id="kdph">0</p>
+                <div class="stat-progress-bar-container"><div class="stat-progress-bar-fill" id="kdph-progress-bar"></div></div>
+            </div>
+            <div class="stat-item timer-item">
+                <h3>शेष समय</h3> <p id="countdown">00:00</p>
+                <div class="stat-progress-bar-container"><div class="stat-progress-bar-fill" id="time-progress-bar"></div></div>
+            </div>
+        </div>
+
+        <div class="test-area" id="test-area">
+            </div>
+
+        <input type="text" id="typing-input" placeholder="यहाँ टाइप करना शुरू करें..." autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" enterkeyhint="next" lang="hi"> <div class="controls">
+            <button class="button primary" id="restart-button">टेस्ट पुनः शुरू करें</button> <button class="button secondary" id="settings-button">सेटिंग्स</button> </div>
+
+        <div class="result-modal" id="result-modal">
+            <div class="modal-content">
+                <h2>टेस्ट के परिणाम</h2> <div class="overall-progress-bar-container">
+                    <h3>समग्र प्रदर्शन</h3> <div class="overall-progress-bar-fill" id="final-conclusion-progress-bar-fill"></div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <h3>अंतिम गति (शब्द प्रति मिनट)</h3> <p id="final-wpm" class="result-value-green">0</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>अंतिम सटीकता (%)</h3> <p id="final-accuracy" class="result-value-green">0</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>कुल त्रुटियां</h3> <p id="final-errors" class="result-value-red">0</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>रॉ शब्द प्रति मिनट</h3> <p id="raw-wpm" class="result-value-purple">0</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>अंतिम वर्ण प्रति मिनट</h3> <p id="final-cpm" class="result-value-orange">0</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>अंतिम कुंजी स्ट्रोक प्रति घंटा</h3> <p id="final-kdph" class="result-value-kdph">0</p>
+                    </div>
+                    <div class="stat-item target-status" id="wpm-target-status">
+                        <h3>WPM लक्ष्य</h3> <p class="status-neutral">उपलब्ध नहीं</p> </div>
+                    <div class="stat-item target-status" id="accuracy-target-status">
+                        <h3>सटीकता लक्ष्य</h3> <p class="status-neutral">उपलब्ध नहीं</p> </div>
+                </div>
+
+                <div class="error-details">
+                    <h3>त्रुटि का विवरण</h3> <ul>
+                        <li>गलत अक्षर: <strong id="err-incorrect-chars">0</strong></li> <li>छूटे हुए अक्षर: <strong id="err-missed-chars">0</strong></li> <li>अतिरिक्त अक्षर: <strong id="err-extra-chars">0</strong></li> <li>छूटे हुए शब्द: <strong id="err-skipped-words">0</strong></li> <li>अतिरिक्त शब्द: <strong id="err-extra-words">0</strong></li> <li>गलत एंटर: <strong id="err-incorrect-enter">0</strong></li> <li>गलत स्पेस: <strong id="err-incorrect-space">0</strong></li> </ul>
+                </div>
+
+
+                <button class="button primary" id="modal-restart-button">टेस्ट पुनः शुरू करें</button> <button class="button secondary" id="modal-settings-button">सेटिंग्स के साथ नया टेस्ट</button> </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to fetch AI-generated stories (simulated for now)
+        async function fetchAIGeneratedStory(lengthCategory = 'medium') {
+            const hindiLongStories = [
+                "एक छोटे से गाँव में, जो पहाड़ों और एक घुमावदार नदी के बीच बसा था, एक जिज्ञासु युवा आविष्कारक रहती थी जिसका नाम एलारा था। उसके दिन अपने छोटे, अव्यवस्थित कार्यशाला में गियर, तार और अजीबोगरीब उपकरणों के साथ प्रयोग करते हुए बीतते थे। गाँव वाले अक्सर उसकी विलक्षणताओं पर हँसते थे, लेकिन वे गुपचुप तरीके से उसकी अटूट लगन की प्रशंसा भी करते थे। एक दिन, एक भयंकर तूफान घाटी में आया, जिससे बिजली गुल हो गई और गाँव अलग-थलग पड़ गया। एलारा, आँखों में एक चमक के साथ, जानती थी कि यह उसका चमकने का क्षण है। उसने अपने नवीनतम आविष्कार का अनावरण किया: एक ऐसा उपकरण जो तूफान की कच्ची ऊर्जा का स्वयं उपयोग कर सकता था, हर घर को प्रकाश और गर्मी प्रदान करता था। एक स्विच के क्लिक के साथ, गाँव का चौक रोशन हो गया, जिससे एक गर्म चमक फैल गई जिसने अंधेरे को भगा दिया और लोगों के दिलों में आशा भर दी। उस दिन से, एलारा केवल एक जिज्ञासु आविष्कारक नहीं रही; वह उनकी प्रकाश की किरण थी।\n\nवह अपना काम करती रही, हमेशा अपनी रचनाओं में सुधार करने का प्रयास करती रही। गाँव वाले, जो कभी संशयवादी थे, अब उसकी सलाह लेते थे और उसकी सरलता पर अचंभित होते थे। एलारा ने उन्हें स्थायी ऊर्जा और नवाचार के महत्व के बारे में सिखाया। उसकी कार्यशाला सीखने का केंद्र बन गई, जहाँ बच्चे उसके काम को देखने और प्रश्न पूछने के लिए इकट्ठा होते थे। वह गाँव, जो कभी केवल अपने शांत आकर्षण के लिए जाना जाता था, अब प्रगति और आत्मनिर्भरता का प्रतीक बन गया, यह सब एलारा की ज्ञान की अथक खोज और उसके उदार भावना के कारण हुआ। उसके आविष्कारों की विरासत घाटी से कहीं आगे फैल गई, अन्य समुदायों को स्वच्छ, नवीकरणीय स्रोतों से संचालित भविष्य को अपनाने के लिए प्रेरित किया। उसकी कहानी एक व्यक्ति की दुनिया को बदलने की शक्ति का प्रमाण बन गई। एलारा, आविष्कारक की कहानी दूर-दूर तक फैल गई, जिससे कई लोगों को प्रेरणा मिली। उसकी विरासत बढ़ती रही, पीढ़ियों तक जीवन को प्रभावित करती रही। उसके मार्गदर्शन में गाँव समृद्ध हुआ, नवाचार और स्थायी जीवन का केंद्र बन गया। उसने साबित किया कि छोटे से छोटे विचार भी स्मारकीय परिवर्तन ला सकते हैं। स्कूलों में बच्चे उसके योगदानों के बारे में सीखते थे, और उसके आविष्कार आशा और सरलता का प्रतीक बन गए। यह परिवर्तन दुनिया भर से विद्वानों औरLara के ज्ञान से सीखने के इच्छुक नवप्रवर्तनकर्ताओं को आकर्षित करता था। विनम्र कार्यशाला एक प्रसिद्ध अनुसंधान केंद्र में खिल गई, जो वैश्विक चुनौतियों को हल करने के लिए समर्पित थी। एलारा का जीवन इस विचार का एक प्रमाण था कि सच्ची प्रगति जुनून, दृढ़ता और मानवता की सेवा करने की गहरी इच्छा के मिश्रण से पैदा होती है। उसका काम प्रौद्योगिकी से परे था, सहयोग और दूरदर्शी सिद्धांतों में निहित एक समुदाय को बढ़ावा देता था।",
+                "प्राचीन पुस्तकालय भूले हुए ज्ञान का एक भूलभुलैया था, उसकी अलमारियां एक गुंबददार छत तक फैली हुई थीं, जो चमड़े में बंधे और पुरानी कागज़ की गंध से भरे किताबों से भरी थीं। माया, एक महत्वाकांक्षी इतिहासकार, ने हमेशा इसके रहस्यों को उजागर करने का सपना देखा था। किंवदंती एक छिपे हुए कक्ष की बात करती थी, जो केवल उन लोगों के लिए सुलभ था जो इमारत की वास्तुकला में बुनी हुई पहेलियों को समझ सकते थे। एक धूल भरे नक्शे और अपनी तेज बुद्धि से लैस, माया ने हफ्तों तक प्रतीकों को ट्रेस किया और पहेलियों को हल किया, उसकी उंगलियां भूले हुए शिलालेखों पर फिरा रही थीं। आखिरकार, दीवार का एक हिस्सा एक नरम क्लिक के साथ पीछे हट गया, जिससे अंधेरे में उतरने वाली एक सर्पिल सीढ़ी का पता चला। नीचे, उसे सोना या गहने नहीं मिले, बल्कि एक ही, प्रकाशित ग्रंथ मिला, उसके पन्नों में उनकी दुनिया का सच्चा इतिहास भरा था, एक ऐसा इतिहास जो उसने कभी पढ़ा था उससे कहीं अधिक भव्य और जटिल था।\n\nग्रंथ में प्राचीन सभ्यताओं और उनके उत्थान और पतन, उनके द्वारा उपयोग की जाने वाली भूली हुई तकनीकों और उनके जीवन का मार्गदर्शन करने वाले दर्शनों का विवरण था। यह केवल घटनाओं का एक रिकॉर्ड नहीं था, बल्कि मानव प्रकृति का एक गहरा अन्वेषण था। माया ने इस खोज की अपार जिम्मेदारी महसूस की। उसने अपने जीवन को इसकी सामग्री को प्रतिलिपि बनाने और फैलाने के लिए समर्पित किया, यह सुनिश्चित करते हुए कि ज्ञान कभी भी समय के साथ खो न जाए। उसके प्रयासों ने ज्ञान के एक नए युग को जन्म दिया, और मानवता, अतीत के ज्ञान से लैस होकर, एक बेहतर भविष्य का निर्माण करने लगी। ग्रंथ से प्राप्त अंतर्दृष्टि ने सामाजिक समझ और तकनीकी प्रगति में क्रांति ला दी। नए अनुशासन उभरे, प्राचीन ज्ञान को आधुनिक विज्ञान के साथ मिश्रित करते हुए। माया ने इस नवोदित ज्ञान को संरक्षित करने और उसका विस्तार करने के लिए समर्पित संस्थानों की स्थापना की, जिससे सभी के लिए इसकी पहुंच सुनिश्चित हुई। उसके काम ने शोधकर्ताओं, कलाकारों और नेताओं की एक पीढ़ी को मौजूदा प्रतिमानों पर सवाल उठाने और नवीन पथों को गढ़ने के लिए प्रेरित किया। पुस्तकालय, जो कभी एक भूला हुआ अवशेष था, वैश्विक ज्ञान का एक प्रकाशस्तंभ बन गया। यह परिवर्तन अपनी चुनौतियों के बिना नहीं था, क्योंकि पुरानी मान्यताएँ नईMya के सत्य के प्रति अटूट प्रतिबद्धता के साथ संघर्ष करती थीं, लेकिन माया की अडिग प्रतिबद्धता ने जीत हासिल की। उसकी विरासत सिर्फ इतिहास की किताबों में ही नहीं, बल्कि एक अधिक प्रबुद्ध और सामंजस्यपूर्ण दुनिया के ताने-बाने में भी अंकित थी। दुनिया ने उसे एक दूरदर्शी के रूप में सराहा, और उसकी खोजों से समृद्धि और शांति का एक सुनहरा युग आया।",
+                "नियो-वेरिडिया शहर हॉवर-कारों के मूक गर्जन और होलोग्राफिक विज्ञापनों की चमक के साथ गुनगुना रहा था। मनुष्य और उन्नत AI साथ-साथ रहते थे, उनके जीवन प्रौद्योगिकी और परंपरा के एक जटिल नृत्य में intertwined थे। काएल, एक डेटा अभिलेखागार, अपने दिन अतीत के डिजिटल अवशेषों को छानते हुए, पैटर्न और विसंगतियों की तलाश में बिताता था। एक शाम, वह एक अजीब डेटा स्ट्रीम पर ठोकर खाई – एक अज्ञात स्रोत से एक एन्क्रिप्टेड संदेश, एक लंबे समय से खो चुकी प्राकृतिक दुनिया के बारे में बोल रहा था, जो शहरीकरण से अछूती थी। एक अदम्य जिज्ञासा से प्रेरित होकर, काएल ने डिजिटल ब्रेडक्रंब का पालन किया, जिससे वह एक प्राचीन, भूले हुए बंदरगाह पर पहुँचा जहाँ एक अकेला, जीर्ण-शीर्ण अंतरिक्ष यान प्रतीक्षा कर रहा था। यह अज्ञात में एक यात्रा थी, हरे जंगलों, नीले महासागरों और कंक्रीट और क्रोम से पहले की दुनिया की अनियंत्रित सुंदरता की फुसफुसाती किंवदंतियों को खोजने की खोज। उसकी यात्रा खतरों से भरी थी, विद्रोही AI गश्त से लेकर वायुमंडलीय विसंगतियों तक, लेकिन काएल का दृढ़ संकल्प कभी नहीं डगमगाया। उसने अपनी खोजों का वर्णन किया, डेटा पैकेट वापस भेजते हुए जिसने 'पुरानी दुनिया' के बारे में सार्वजनिक धारणा को धीरे-धीरे बदलना शुरू कर दिया। जीवन से भरपूर अछूते पारिस्थितिक तंत्रों की खोज ने नियो-वेरिडिया के विशुद्ध रूप से तकनीकी अस्तित्व को चुनौती दी। काएल का मिशन एक व्यक्तिगत खोज से एक वैश्विक आंदोलन में बदल गया, जिससे मानवता के भविष्य और प्रकृति के साथ उसके संबंध के बारे में बहस छिड़ गई। उसके साहस ने दूसरों को भूले हुए सत्यों की तलाश करने के लिए प्रेरित किया, जिससे अन्वेषण और पारिस्थितिक बहाली के एक नए युग का जन्म हुआ। अंतरिक्ष यान, जो कभी उसकी एकाकी यात्रा का प्रतीक था, एक ऐसे भविष्य के लिए आशा का एक पात्र बन गया जहाँ प्रौद्योगिकी और प्रकृति एक साथ सह-अस्तित्व में रह सकें। नियो-वेरिडिया के नागरिकों ने अपने बाँझ शहर में पेड़ लगाना शुरू कर दिया, जो एक हरियाली भरे भविष्य की दिशा में एक छोटा लेकिन महत्वपूर्ण कदम था। काएल का नाम प्रकृति की ओर वापसी का पर्याय बन गया, एक नायक जिसने अपनी दुनिया के निर्मित सुखों से परे देखने का साहस किया।"
+            ];
+            const hindiShortStories = [
+                "बिल्ली आग के पास आराम से सो रही थी, धीरे से खर्राटे ले रही थी। बाहर हल्की बारिश हो रही थी, खिड़की पर थपथपा रही थी। जल्द ही, सुबह की रोशनी कमरे को भर देगी, घर को जगा देगी। जीवन सरल और अच्छा था, खुशी के शांत क्षणों से भरा था। कॉफी बनाने की महक हवा में भर गई, दिन की आरामदायक शुरुआत। पक्षी बाहर चहक रहे थे, अपनी मधुर गीतों से सुबह का स्वागत कर रहे थे। खिड़की के पास वाली पुरानी कुर्सी उसकी पसंदीदा जगह थी, जहाँ वह घंटों पढ़ती थी, रोमांच और आश्चर्य की दुनिया में खोई हुई। उसकी कुटिया के बाहर का छोटा सा बगीचा रंगों का दंगा था, जीवंत फूल हवा में धीरे से झूल रहे थे। हर दिन नवीनीकरण और शांतिपूर्ण संतुष्टि की भावना लाता था, अस्तित्व की सरल लेकिन गहन सुंदरता का प्रतिबिंब। वह अक्सर छोटी-छोटी बातों के बारे में सोचती थी जो जीवन को इतना समृद्ध बनाती थीं। एक अच्छी किताब, एक गर्म पेय, और उसके बिल्ली के दोस्त की नरम उपस्थिति वह सब कुछ थी जिसकी उसे वास्तव में आवश्यकता थी।",
+                "एक छोटा सा बीज पृथ्वी में गहराई से दबा हुआ था, सूरज का सपना देख रहा था। धीरे-धीरे, उसने एक जड़ नीचे और एक अंकुर ऊपर धकेल दिया। हरी पत्तियाँ खुलीं, आकाश की ओर बढ़ रही थीं। यह एक मजबूत ओक का पेड़ बन गया, जो थके हुए यात्रियों के लिए छाया और अनगिनत जीवों के लिए आश्रय प्रदान करता था। इसकी शाखाएँ, उम्र के साथ मुड़ी हुई, पिछले मौसमों की कहानियाँ सुनाती थीं, कठोर सर्दियों और जीवंत वसंतों की। पक्षियों की पीढ़ियों ने इसकी मजबूत टहनियों में अपने घोंसले बनाए, उनके गाने इसकी छतरी के माध्यम से गूँजते थे। ओक एक मौन प्रहरी के रूप में खड़ा था, लचीलेपन और विकास का एक वसीयतनामा, भूमि के इतिहास में मजबूती से निहित। इसकी राजसी उपस्थिति ने कलाकारों और कवियों को प्रेरित किया, उन्हें अपनी शांत सुंदरता की ओर आकर्षित किया। हवा इसकी पत्तियों के माध्यम से फुसफुसाती थी, जंगल की कहानियों को दूर देशों तक ले जाती थी, जबकि इसके फल पृथ्वी को पोषण देते थे, नए जीवन का वादा करते थे और प्रकृति की भव्य डिजाइन के अंतहीन चक्र को जारी रखते थे। कई लोगों ने इसकी विस्तृत गोद में सांत्वना पाई।",
+                "पुराना प्रकाशस्तंभ तूफानी समुद्र के खिलाफ ऊँचा खड़ा था, उसकी किरण कोहरे को भेद रही थी। पीढ़ियों से, इसने जहाजों को सुरक्षित रूप से किनारे तक पहुँचाया, विश्वासघाती लहरों के खिलाफ एक मौन संरक्षक। इसका दीपक, एक समर्पित रखवाले द्वारा ईंधनित, कभी नहीं डगमगाया, सबसे अंधेरी रातों में आशा का एक निरंतर प्रकाशस्तंभ। नमकीन स्प्रे ने इसकी पत्थर की दीवारों को चूमा, और सीगल की चीखें इसकी मजबूत संरचना के चारों ओर गूँजती थीं। दूर-दूर के नाविक इसकी आरामदायक चमक को जानते थे, खतरनाक पानी से सुरक्षित मार्ग का वादा। प्रकाशस्तंभ सिर्फ एक इमारत से कहीं अधिक था; यह अटूट सतर्कता और निस्वार्थ सेवा का प्रतीक था, समुद्र की अथाह, अप्रत्याशित शक्ति के खिलाफ अडिग खड़ा था, उन सभी के लिए एक सच्चा नायक जो विशाल, अप्रत्याशित विस्तार को नेविगेट करते थे। इसकी रोशनी ने अनगिनत जीवन बचाए थे, मानव सरलता और दृढ़ता का एक मौन वसीयतनामा। सबसे शांत दिनों में भी, यह समुद्र की शक्ति और मानवता के लचीलेपन की याद दिलाता था।",
+                "उसने अपनी ब्रश उठाई और कैनवास पर पेंट लगाया। रंग घूमे, परिदृश्य और सपने बनाते हुए। हर स्ट्रोक ने एक नई दुनिया को जीवन दिया, उसकी कल्पना और कौशल से जन्मी। कैनवास उसके कुशल हाथ के नीचे बदल गया, जीवंत घास के मैदानों, ऊँचे पहाड़ों और शांत झीलों को प्रकट करता हुआ, सभी एक जादुई चमक से भरे हुए थे। उसका स्टूडियो, तेलों और तारपीन की गंध से भरा, उसका अभयारण्य था, एक ऐसी जगह जहाँ विचार स्वतंत्र रूप से प्रतीक्षा कर रही सतह पर बहते थे। हर पेंटिंग के साथ, उसने अपनी आत्मा का एक टुकड़ा डाला, दुनिया की क्षणभंगुर सुंदरता को पकड़ने और दूसरों के साथ साझा करने की उम्मीद में। उसकी कला उसकी आंतरिक दृष्टि और खाली सफेद जगह की अनंत संभावनाओं के बीच एक संवाद थी, खोज और निर्माण की एक यात्रा जो लगातार उसकी कलात्मक अभिव्यक्ति की सीमाओं को धकेलती थी, अपने पीछे लुभावनी उत्कृष्ट कृतियों का एक निशान छोड़ जाती थी। दुनिया भर के लोग उसकी अनूठी प्रतिभा की प्रशंसा करते थे।"
+            ];
+            // Updated Hindi randomWordList to include punctuation and some numbers
+            const hindiRandomWordList = [
+                "यह", "एक", "तेज", "भूरा", "लोमड़ी", "कुत्ते", "के", "ऊपर", "कूदता", "है।", "टाइपिंग", "अभ्यास", "कीबोर्ड,", "गति", "सटीकता!", "चुनौती", "सीखो", "जावास्क्रिप्ट", "एचटीएमएल", "सीएसएस?", "वेब", "विकास", "कार्यक्रम", "कंप्यूटर।", "विज्ञान", "इंटरनेट", "ब्राउज़र,", "संपादक", "कार्य", "चर", "तत्व?", "दस्तावेज़", "शैली", "कंसोल", "टर्मिनल।", "एल्गोरिथम", "डेटा", "संरचना", "नेटवर्क!", "सर्वर", "क्लाइंट", "अनुरोध,", "प्रतिक्रिया", "प्रोटोकॉल", "सुरक्षा।", "एन्क्रिप्शन", "डेटाबेस", "क्वेरी,", "फ्रेमवर्क", "लाइब्रेरी", "घटक!", "मॉड्यूल", "पैकेज", "संस्करण।", "नियंत्रण", "भंडार", "कमिट,", "शाखा", "विलय", "पुल?", "पुश", "रिमोट", "स्थानीय।", "ऑनलाइन", "ऑफ़लाइन", "कनेक्ट,", "डिस्कनेक्ट", "अपलोड", "डाउनलोड!", "इंस्टॉल", "अपडेट", "डिलीट।", "बनाओ", "पढ़ो", "लिखो,", "निष्पादित", "डिबग", "टेस्ट?", "डिप्लॉय", "मॉनिटर", "ऑप्टिमाइज़।", "स्केल", "स्वचालित", "बिल्ड,", "चलाओ", "रुको", "शुरू!", "पुनःप्रारंभ", "कॉन्फ़िगर", "सेटअप।", "प्रबंधित", "संगठित", "डिज़ाइन,", "विकसित", "लागू", "बनाए रखो?", "समर्थन", "समस्या निवारण", "समाधान।", "समाधान", "समस्या", "मुद्दा,", "त्रुटि", "चेतावनी", "सफलता!", "विफलता", "प्रगति", "स्थिति।", "रिपोर्ट", "लॉग", "इतिहास,", "विश्लेषण", "मीट्रिक", "प्रदर्शन?", "संसाधन", "मेमोरी", "सीपीयू।", "डिस्क", "बैंडविड्थ", "विलंबता,", "थ्रूपुट", "विश्वसनीयता", "उपलब्धता!", "स्केलेबिलिटी", "रखरखाव", "उपयोगिता।", "लचीलापन", "विस्तारणीयता", "पोर्टेबिलिटी,", "सुरक्षा", "अखंडता", "गोपनीयता!", "प्रमाणीकरण", "अधिकार", "ऑडिट।", "अनुपालन", "नियमन", "मानक,", "दिशानिर्देश", "सर्वोत्तम", "अभ्यास?", "पैटर्न", "डिज़ाइन", "आर्किटेक्चर।", "मॉडल", "आरेख", "फ्लोचार्ट,", "स्यूडोकॉड", "दस्तावेज़", "टिप्पणी!", "रिफैक्टर", "ऑप्टिमाइज़", "डिबग।", "टेस्ट", "डिप्लॉय", "मॉनिटर,", "अलर्ट", "लॉग", "ट्रेस?", "प्रोफाइल", "बेंचमार्क", "विश्लेषण।", "रिपोर्ट", "सारांश", "विवरण,", "अवलोकन", "संदर्भ", "दायरा!", "आवश्यकता", "विनिर्देशन", "सुविधा।", "बग", "फिक्स", "पैच,", "रिलीज", "संस्करण", "अपडेट?", "अपग्रेड", "डाउनग्रेड", "इंस्टॉल।", "अनइंस्टॉल", "सेटअप", "कॉन्फ़िगर,", "कस्टमाइज़", "व्यक्तिगत", "सेटिंग्स!", "विकल्प", "वरीयताएँ", "प्रोफाइल।", "खाता", "उपयोगकर्ता", "प्रशासक,", "अतिथि", "भूमिका", "अनुमति?", "पहुंच", "नियंत्रण", "सुरक्षा।", "गोपनीयता", "डेटा", "जानकारी,", "ज्ञान", "ज्ञान", "बुद्धिमत्ता!", "सीखना", "शिक्षा", "प्रशिक्षण।", "पाठ्यक्रम", "पाठ", "ट्यूटोरियल,", "गाइड", "मैनुअल", "किताब?", "लेख", "ब्लॉग", "फोरम।", "समुदाय", "समर्थन", "मदद,", "अक्सर", "पूछे", "जाने", "वाले", "प्रश्न", "समस्या", "निवारण", "डिबग!", "हल", "करो", "हल", "करो", "ठीक", "करो।", "मरम्मत", "बहाल", "बैकअप,", "पुनर्प्राप्त", "संग्रहीत", "संपीड़ित?", "असंपीड़ित", "एन्क्रिप्ट", "डिक्रिप्ट।", "हैश", "चेकसम", "मान्य", "करो,", "सत्यापित", "प्रमाणीकृत", "अधिकार!", "प्रदान", "रद्द", "इनकार।", "अनुमति", "सक्षम", "अक्षम,", "टॉगल", "स्विच", "सक्रिय?", "निष्क्रिय", "शुरू", "बंद।", "रोक", "दो", "फिर", "से", "शुरू", "करो", "रद्द", "करो,", "रद्द", "करो", "पुनःप्रयास", "फिर", "से", "करो!", "पूर्ववत", "सहेजें", "लोड।", "खोलें", "बंद", "करें", "नया,", "संपादित", "हटाएँ", "कॉपी?", "काटें", "पेस्ट", "चुनें।", "सभी", "साफ़", "करें", "रीसेट,", "जमा", "करें", "भेजें", "प्राप्त", "करें!", "डाउनलोड", "अपलोड", "आयात।", "निर्यात", "साझा", "करें", "प्रिंट,", "पूर्वावलोकन", "ज़ूम", "इन?", "आउट", "फिट", "चौड़ाई।", "ऊंचाई", "वास्तविक", "आकार,", "पूर्णस्क्रीन", "बाहर", "निकलें", "खोज!", "फ़िल्टर", "क्रमबद्ध", "समूह।", "श्रेणीबद्ध", "टैग", "लेबल,", "चिह्नित", "पसंदीदा", "बुकमार्क?", "पिन", "छिपाओ", "दिखाओ।", "संक्षिप्त", "विस्तार", "स्थानांतरित,", "नाम", "बदलें", "डुप्लिकेट", "क्लोन!", "विलय", "विभाजित", "शामिल।", "जोड़ो", "अलग", "करो", "निकालो,", "दर्ज", "करो", "हटाओ", "बदलो?", "खोजो", "बदलो", "जाओ।", "पंक्ति", "स्तंभ", "अक्षर,", "शब्द", "वाक्य", "पैराग्राफ!", "दस्तावेज़", "फ़ाइल", "फ़ोल्डर।", "निर्देशिका", "पथ", "यूआरएल,", "यूआरआई", "यूआरएन", "प्रोटोकॉल?", "होस्ट", "पोर्ट", "क्वेरी।", "टुकड़ा", "योजना", "प्राधिकरण,", "उपयोगकर्ता जानकारी", "होस्टनेम", "पाथनेम!", "खोज", "हैश", "मूल।", "प्रोटोकॉल", "डोमेन", "सबडोमेन,", "शीर्ष-स्तर", "दूसरा-स्तर", "देश-कोड!", "जेनेरिक", "आरक्षित", "सार्वजनिक।", "निजी", "स्थानीय", "वैश्विक,", "आंतरिक", "बाहरी", "रिमोट!", "क्लाउड", "ऑन-प्रिमाइसेस", "हाइब्रिड।", "वितरित", "केंद्रीकृत", "विकेंद्रीकृत,", "पीयर-टू-पीयर", "क्लाइंट-सर्वर", "फ्रंट-एंड!", "बैक-एंड", "पूर्ण-स्टैक", "डेस्कटॉप।", "मोबाइल", "वेब", "नेटिव,", "क्रॉस-प्लेटफॉर्म", "हाइब्रिड", "उत्तरदायी!", "अनुकूली", "द्रव", "स्थिर।", "ग्रिड", "फ्लेक्सबॉक्स", "बूटस्ट्रैप,", "सामग्री", "डिजाइन", "यूआई!", "यूएक्स", "इंटरफ़ेस", "अनुभव।", "बातचीत", "उपयोगिता", "पहुंच क्षमता,", "प्रदर्शन", "सुरक्षा", "स्केलेबिलिटी!", "विश्वसनीयता", "उपलब्धता", "रखरखाव।", "परीक्षण क्षमता", "विस्तारणीयता", "लचीलापन,", "पोर्टेबिलिटी", "पुनः प्रयोज्य", "मॉड्यूलरिटी!", "सरलता", "स्थिरता", "दक्षता।", "मजबूती", "त्रुटि-हैंडलिंग", "लॉगिंग,", "मॉनिटरिंग", "डिबगिंग", "परीक्षण!", "तैनाती", "स्वचालन", "स्क्रिप्टिंग।", "प्रोग्रामिंग", "कोडिंग", "सॉफ्टवेयर,", "हार्डवेयर", "फर्मवेयर", "मिडलवेयर!", "ऑपरेटिंग", "सिस्टम", "कर्नेल।", "शेल", "कमांड", "लाइन,", "इंटरफ़ेस", "ग्राफिकल", "उपयोगकर्ता!", "इंटरफ़ेस", "एपीआई", "एसडीके।", "लाइब्रेरी", "फ्रेमवर्क", "उपकरण,", "उपयोगिता", "एप्लिकेशन", "कार्यक्रम!", "सेवा", "डेमॉन", "प्रक्रिया।", "थ्रेड", "समवर्ती", "समांतरता,", "सिंक्रनाइज़ेशन", "अतुल्यकालिक", "कॉलबैक!", "वादा", "एसिंक", "प्रतीक्षा।", "इवेंट", "लूप", "कतार,", "स्टैक", "हीप", "ट्री!", "ग्राफ", "लिंक्ड", "सूची।", "सरणी", "वस्तु", "मैप,", "सेट", "पुनरावर्तक", "जनरेटर!", "डेकोरेटर", "क्लोजर", "उच्च-क्रम।", "कार्य", "शुद्ध", "कार्य,", "साइड-इफेक्ट", "आईडेम्पोटेंट", "अपरिवर्तनीय!", "परिवर्तनीय", "अवस्था", "अवस्थाहीन।", "सक्षम", "घटक", "प्रॉप्स,", "अवस्था", "जीवनचक्र", "हुक!", "संदर्भ", "प्रदाता", "उपभोक्ता।", "रिड्यूसर", "एक्शन", "डिस्पैच,", "स्टोर", "सब्सक्राइब", "अनसब्सक्राइब!", "मिडलवेयर", "थंक", "सागा।", "रिडक्स", "मोबैक्स", "व्यूएक्स,", "एंगुलर", "रिएक्ट", "व्यू!", "जेक्वेरी", "लोडैश", "अंडरस्कोर।", "मोमेंट", "डेट-एफएनएस", "एक्सिओस,", "फ़ेच", "वेबसॉकेट", "सॉकेट.आईओ!", "ग्राफक्यूएल", "रेस्ट", "एपीआई।", "JSON", "एक्सएमएल", "YAML,", "CSV", "TSV", "मार्कडाउन!", "एचटीएमएल", "सीएसएस", "जावास्क्रिप्ट।", "टाइपस्क्रिप्ट", "पायथन", "जावा,", "सीएसहर्प", "गो", "रस्ट!", "PHP", "रूबी", "स्विफ्ट।", "कोटलिन", "स्काला", "हैस्केल,", "क्लोजर", "लिस्प", "एर्लांग!", "एलिक्सिर", "पर्ल", "बैश।", "शेल", "पावरशेल", "SQL,", "नोएसक्यूएल", "मोंगोडीबी", "पोस्टग्रेएसक्यूएल!", "माईएसक्यूएल", "एसक्यूएललाइट", "रेडिस।", "कैसांड्रा", "एलास्टिकसर्च", "काफका,", "रैबिट", "एमक्यू", "एडब्ल्यूएस!", "एज़्योर", "जीसीपी", "डॉकर।", "कुबेरनेट्स", "गिट", "गिटहब,", "गिटलैब", "बिटबकेट", "जेनकिंस!", "ट्रैविस", "सीआई", "सर्किलसीआई।", "गिटहब", "एक्शन", "एज़्योर,", "देवओप्स", "जीरा", "ट्रेल्लो!", "आसाना", "स्लैक", "डिस्कॉर्ड।", "ज़ूम", "गूगल", "मीट,", "माइक्रोसॉफ्ट", "टीम्स", "आउटलुक!", "जीमेल", "कैलेंडर", "ड्राइव।", "डॉक्स", "शीट्स", "स्लाइड्स,", "फॉर्म", "मैप्स", "यूट्यूब!", "ट्विटर", "फेसबुक", "इंस्टाग्राम।", "लिंक्डइन", "स्नैपचैट", "टिकटॉक,", "रेडिट", "पिंटरेस्ट", "व्हाट्सएप!", "टेलीग्राम", "सिग्नल", "वाइबर।", "वीचैट", "लाइन", "स्काइप,", "फेसटाइम", "आईमैसेज", "एसएमएस!", "ईमेल", "फोन", "कॉल।", "वीडियो", "ऑडियो", "टेक्स्ट,", "संदेश", "चैट", "ग्रुप!", "चैनल", "थ्रेड", "सूचना।", "अलर्ट", "बैज", "आइकन,", "बटन", "लिंक", "इनपुट!", "टेक्स्ट", "एरिया", "चेकबॉक्स।", "रेडियो", "सेलेक्ट", "ऑप्शन,", "ड्रॉपडाउन", "स्लाइडर", "रेंज!", "प्रगति", "बार", "स्पिनर।", "लोडर", "टूलटिप", "पॉपओवर,", "मॉडल", "डायलॉग", "एकॉर्डियन!", "टैब", "कैरसेल", "पेजिनेशन।", "ब्रेडक्रंब", "नेवबार", "साइडबार,", "फूटर", "हेडर", "मुख्य!", "अनुभाग", "लेख", "साइड।", "आकृति", "चित्र", "विवरण,", "सारांश", "डायलॉग", "मेनू!", "आइटम", "सूची", "अनियंत्रित।", "क्रमबद्ध", "परिभाषा", "तालिका,", "पंक्ति", "स्तंभ", "सेल!", "शीर्षक", "थ्रेड", "टीबॉडी।", "टीफुट", "फॉर्म", "फील्डसेट,", "किंवदंती", "लेबल", "इनपुट!", "टेक्स्ट एरिया", "बटन", "सेलेक्ट।", "विकल्प", "डेटालिस्ट", "आउटपुट,", "मीटर", "प्रगति", "छवि!", "चित्र", "स्रोत", "एसवीजी।", "कैनवास", "ऑडियो", "वीडियो,", "ट्रैक", "एम्बेड", "आईफ्रेम!", "वस्तु", "पैरामीटर", "मैप।", "क्षेत्र", "लिंक", "मेटा,", "शैली", "स्क्रिप्ट", "नोस्क्रिप्ट!", "टेम्पलेट", "स्लॉट", "संक्षिप्त।", "पता", "बी", "बीडीआई,", "बीडीओ", "ब्लॉककोट", "साइट!", "कोड", "डेल", "डीएफएन।", "ईएम", "आई", "आईएनएस,", "केबीडी", "मार्क", "क्यू!", "आरपी", "आरटी", "आरटीसी।", "रूबी", "एस", "एसएएमपी,", "छोटा", "स्पैन", "मजबूत!", "उप", "सुप", "समय।", "यू", "वीएआर", "डब्ल्यूबीआर,"
+            ];
+
+
+            if (lengthCategory === 'random-words') {
+                let generatedText = "";
+                const baseWordCount = 500;
+                const targetWordCount = baseWordCount * (testDurationSelect.value / 5);
+                for (let i = 0; i < targetWordCount; i++) {
+                    generatedText += hindiRandomWordList[Math.floor(Math.random() * hindiRandomWordList.length)] + " ";
+                }
+                return generatedText.trim();
+            } else if (lengthCategory === 'short') {
+                return hindiShortStories[Math.floor(Math.random() * hindiShortStories.length)];
+            } else if (lengthCategory === 'long') {
+                return hindiLongStories[Math.floor(Math.random() * hindiLongStories.length)];
+            } else { // 'medium' or default AI story fallback
+                return "सूर्य क्षितिज के नीचे डूब गया, आकाश को नारंगी और बैंगनी रंग में रंगते हुए। एक अकेला पक्षी धुंधली रोशनी में उड़ गया, उसके पंख आखिरी किरणों को पकड़ रहे थे। नीचे, शहर की रोशनी टिमटिमाने लगी, व्यस्त गतिविधि की रात का वादा करते हुए। एक हल्की हवा खुली खिड़की से खिलते हुए चमेली की गंध ले आई। यह दिन की घटनाओं पर विचार करने और आगे की शांत घंटों का अनुमान लगाने के लिए एक आदर्श शाम थी। दुनिया शांत महसूस हुई, जैसे ही अंधेरे ने परिदृश्य को गले लगाया, सूक्ष्म परिवर्तनों की एक सिम्फनी सामने आई, जो एक नई सुबह और नए अवसरों का वादा करती है। हर पल में एक शांत सुंदरता थी, एक क्षणभंगुर पूर्णता जिसने दिल को उसके साधारण अस्तित्व के लिए कृतज्ञता के साथ गा दिया। तारे धीरे-धीरे एक-एक करके उभरे, रात के आकाश के मखमली विस्तार को बिंदीदार करते हुए। शहर पर शांति छा गई, अगले दिन की जीवंत लय से पहले एक शांत खामोशी। दूर के यातायात की हल्की गूँज एक लोरी थी, और स्ट्रीटलाइट्स की हल्की चमक शांत सड़कों पर लंबी छाया डालती थी। यह एक क्षण था, समय के अथक मार्च में एक विराम, उन साधारण चमत्कारों की याद दिलाता है जो अक्सर दैनिक जीवन की भीड़ में अनदेखे रह जाते हैं। यह शांत अंतरालय आत्मनिरीक्षण का अवसर प्रदान करता है, आने वाले घंटों में कुछ भी लाने के लिए रिचार्ज करने और तैयार करने का एक क्षण, धुंधली रोशनी का एक सच्चा उपहार।";
+            }
+        }
+        // --- END MOCK AI GENERATION ---
+
+        // DOM Elements
+        const mainContent = document.getElementById('main-content');
+        const testArea = document.getElementById('test-area');
+        const typingInput = document.getElementById('typing-input');
+        const wpmDisplay = document.getElementById('wpm');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const errorsDisplay = document.getElementById('errors');
+        const cpmDisplay = document.getElementById('cpm');
+        const kdphDisplay = document.getElementById('kdph');
+        const countdownDisplay = document.getElementById('countdown');
+        const restartButton = document.getElementById('restart-button');
+        const settingsButton = document.getElementById('settings-button');
+        const resultModal = document.getElementById('result-modal');
+        const finalWpmDisplay = document.getElementById('final-wpm');
+        const finalAccuracyDisplay = document.getElementById('final-accuracy');
+        const finalErrorsDisplay = document.getElementById('final-errors');
+        const rawWpmDisplay = document.getElementById('raw-wpm');
+        const finalCpmDisplay = document.getElementById('final-cpm');
+        const finalKdphDisplay = document.getElementById('final-kdph');
+        const modalRestartButton = document.getElementById('modal-restart-button');
+        const modalSettingsButton = document.getElementById('modal-settings-button');
+
+        // Final Conclusion Progress Bar (only in modal)
+        const finalConclusionProgressBarFill = document.getElementById('final-conclusion-progress-bar-fill');
+
+
+        // Mini Progress Bars for each stat
+        const wpmProgressBar = document.getElementById('wpm-progress-bar');
+        const accuracyProgressBar = document.getElementById('accuracy-progress-bar');
+        const errorsProgressBar = document.getElementById('errors-progress-bar');
+        const cpmProgressBar = document.getElementById('cpm-progress-bar');
+        const kdphProgressBar = document.getElementById('kdph-progress-bar');
+        const timeProgressBar = document.getElementById('time-progress-bar');
+
+
+        // Settings Overlay Elements
+        const settingsOverlay = document.getElementById('settings-overlay');
+        const testDurationSelect = document.getElementById('test-duration');
+        const targetWpmInput = document.getElementById('target-wpm');
+        const targetAccuracyInput = document.getElementById('target-accuracy');
+        const storyTypeSelect = document.getElementById('story-type');
+        const saveSettingsButton = document.getElementById('save-settings-button');
+        const skipSettingsButton = document.getElementById('skip-settings-button');
+        const wpmTargetStatus = document.getElementById('wpm-target-status');
+        const accuracyTargetStatus = document.getElementById('accuracy-target-status');
+
+        // Custom Story Elements
+        const customStoryArea = document.getElementById('custom-story-area');
+        const customStoryTextarea = document.getElementById('custom-story-textarea');
+        const addStoryLinkButton = document.getElementById('add-story-link-button');
+
+        // Detailed Error Elements
+        const errIncorrectChars = document.getElementById('err-incorrect-chars');
+        const errMissedChars = document.getElementById('err-missed-chars');
+        const errExtraChars = document.getElementById('err-extra-chars');
+        const errSkippedWords = document.getElementById('err-skipped-words');
+        const errExtraWords = document.getElementById('err-extra-words');
+        const errIncorrectEnter = document.getElementById('err-incorrect-enter');
+        const errIncorrectSpace = document.getElementById('err-incorrect-space');
+
+
+        // Global Variables
+        let testWords = [];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let startTime;
+        let timerInterval;
+        let defaultTestDuration = 5 * 60;
+        let timeLeft = defaultTestDuration;
+
+        let correctChars = 0;
+        let totalTypedChars = 0;
+        let totalExpectedCharsInTest = 0;
+
+        // New flag for handling mobile keyboard composition
+        let isComposing = false;
+
+
+        // Detailed Error Counts
+        let errors = {
+            incorrectChars: 0,
+            missedChars: 0,
+            extraChars: 0,
+            skippedWords: 0,
+            extraWords: 0,
+            incorrectEnter: 0,
+            incorrectSpace: 0
+        };
+
+        let userTargetWPM = null;
+        let userTargetAccuracy = null;
+        let currentStoryType = 'random-words';
+        let customStoryText = '';
+        let isTestRunning = false;
+        let highestWPM = 0; // To track for dynamic progress bar scaling
+        let highestCPM = 0;
+        let highestKDPH = 0;
+
+
+        // Utility to format time
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // Helper to set progress bar width
+        function setProgressBar(element, percentage) {
+            element.style.width = `${Math.min(100, Math.max(0, percentage))}%`;
+        }
+
+
+        async function generateAndRenderTestWords() {
+            testWords = [];
+            testArea.innerHTML = '';
+            totalExpectedCharsInTest = 0;
+
+            let textToType = "";
+
+            if (currentStoryType === 'ai-story') {
+                let lengthCategory = 'medium';
+                const durationMinutes = parseInt(testDurationSelect.value);
+                if (durationMinutes <= 2) {
+                    lengthCategory = 'short';
+                } else if (durationMinutes >= 10) {
+                    lengthCategory = 'long';
+                }
+                textToType = await fetchAIGeneratedStory(lengthCategory);
+            } else if (currentStoryType === 'user-custom') {
+                textToType = customStoryText.trim();
+                if (textToType === "") {
+                    alert("कृपया टेक्स्ट एरिया में अपनी कस्टम कहानी पेस्ट करें या कोई अन्य कहानी प्रकार चुनें।"); // Changed to Hindi
+                    settingsOverlay.classList.add('show');
+                    mainContent.classList.add('content-hidden');
+                    return false;
+                }
+            } else {
+                textToType = await fetchAIGeneratedStory('random-words');
+            }
+
+            const paragraphs = textToType.split(/\r?\n/);
+
+            paragraphs.forEach((paragraphText, paraIdx) => {
+                const paragraphDiv = document.createElement('div');
+                paragraphDiv.classList.add('paragraph');
+
+                // Split words in a paragraph by one or more spaces
+                const wordsWithSpaces = paragraphText.match(/\S+\s*|\s+/g) || [];
+
+                wordsWithSpaces.forEach((item) => {
+                    if (item.trim() === '') {
+                        totalExpectedCharsInTest += item.length;
+                    } else {
+                        const actualWord = item.trim();
+                        testWords.push(actualWord);
+                        totalExpectedCharsInTest += actualWord.length;
+
+                        const wordSpan = document.createElement('span');
+                        wordSpan.classList.add('word');
+                        actualWord.split('').forEach(char => {
+                            const charSpan = document.createElement('span');
+                            charSpan.textContent = char;
+                            charSpan.classList.add('untyped');
+                            wordSpan.appendChild(charSpan);
+                        });
+
+                        const trailingSpaces = item.substring(actualWord.length);
+                        for (let i = 0; i < trailingSpaces.length; i++) {
+                            const charSpan = document.createElement('span');
+                            charSpan.textContent = trailingSpaces[i];
+                            charSpan.classList.add('untyped');
+                            wordSpan.appendChild(charSpan);
+                        }
+                        totalExpectedCharsInTest += trailingSpaces.length;
+
+                        paragraphDiv.appendChild(wordSpan);
+                    }
+                });
+
+                if (paraIdx < paragraphs.length -1) {
+                    const newlineMarker = document.createElement('span');
+                    newlineMarker.classList.add('newline-marker');
+                    paragraphDiv.appendChild(newlineMarker);
+
+                    testWords.push('\n');
+                    totalExpectedCharsInTest++;
+                }
+
+                testArea.appendChild(paragraphDiv);
+            });
+
+            highlightCurrentWord();
+            adjustTestAreaScroll();
+            updateAllProgressBars(); // Initialize all progress bars
+            return true;
+        }
+
+        function getDomElementForTestItem(targetIndex) {
+            let currentTraversalIndex = 0;
+            const paragraphs = testArea.querySelectorAll('.paragraph');
+
+            for (let i = 0; i < paragraphs.length; i++) {
+                const paragraphDiv = paragraphs[i];
+                const children = Array.from(paragraphDiv.children);
+
+                for (let j = 0; j < children.length; j++) {
+                    const child = children[j];
+                    if (currentTraversalIndex === targetIndex) {
+                        return child;
+                    }
+                    currentTraversalIndex++;
+                }
+            }
+            return null;
+        }
+
+        function highlightCurrentWord() {
+            testArea.querySelectorAll('.word').forEach(span => {
+                span.classList.remove('current-word');
+            });
+            testArea.querySelectorAll('.newline-marker').forEach(marker => {
+                marker.classList.remove('current-newline-marker');
+            });
+
+
+            if (wordIndex >= testWords.length) {
+                adjustTestAreaScroll();
+                return;
+            }
+
+            const currentItem = testWords[wordIndex];
+            const currentDomElement = getDomElementForTestItem(wordIndex);
+
+            if (currentItem === '\n') {
+                if (currentDomElement && currentDomElement.classList.contains('newline-marker')) {
+                    currentDomElement.classList.add('current-newline-marker');
+                    adjustTestAreaScroll();
+                }
+            } else if (currentDomElement && currentDomElement.classList.contains('word')) {
+                currentDomElement.classList.add('current-word');
+                adjustTestAreaScroll();
+            }
+        }
+
+        function adjustTestAreaScroll() {
+            const currentDomElement = getDomElementForTestItem(wordIndex);
+            if (!currentDomElement) return;
+
+            const testAreaRect = testArea.getBoundingClientRect();
+            const targetRect = currentDomElement.getBoundingClientRect();
+
+            if (targetRect.bottom > testAreaRect.bottom) {
+                testArea.scrollTop += (targetRect.bottom - testAreaRect.bottom) + 10;
+            }
+            else if (targetRect.top < testAreaRect.top) {
+                testArea.scrollTop -= (testAreaRect.top - targetRect.top) + 10;
+            }
+        }
+
+        // New function to update all progress bars
+        function updateAllProgressBars() {
+            const timeElapsed = (defaultTestDuration - timeLeft);
+            const minutesElapsed = timeElapsed / 60;
+            const hoursElapsed = timeElapsed / 3600;
+
+            const currentWPM = Math.max(0, ((correctChars - (errors.incorrectChars + errors.missedChars + errors.extraChars + (errors.skippedWords * 5) + (errors.extraWords * 5) + errors.incorrectEnter + errors.incorrectSpace)) / 5) / (minutesElapsed || 1));
+            const currentAccuracy = totalTypedChars === 0 ? 0 : Math.round((correctChars / totalTypedChars) * 100);
+            const totalErrors = errors.incorrectChars + errors.missedChars + errors.extraChars + errors.skippedWords + errors.extraWords + errors.incorrectEnter + errors.incorrectSpace;
+            const currentCPM = correctChars / (minutesElapsed || 1);
+            const currentKDPH = correctChars / (hoursElapsed || 1);
+
+
+            // Update highest WPM, CPM, KDPH for better scaling if current value exceeds previous highest
+            if (currentWPM > highestWPM) highestWPM = currentWPM;
+            if (currentCPM > highestCPM) highestCPM = currentCPM;
+            if (currentKDPH > highestKDPH) highestKDPH = currentKDPH;
+
+            // WPM Progress Bar
+            const maxWPMForScale = Math.max(100, highestWPM + 20); // Add a buffer for better visual range
+            let wpmProgress = (currentWPM / maxWPMForScale) * 100;
+            setProgressBar(wpmProgressBar, wpmProgress);
+
+            // Accuracy Progress Bar (0-100%)
+            setProgressBar(accuracyProgressBar, currentAccuracy);
+
+            // Errors Progress Bar (More errors = wider bar)
+            const maxErrorsForScale = Math.max(50, totalExpectedCharsInTest * 0.15); // e.g., 15% of expected chars
+            const errorProgress = (totalErrors / maxErrorsForScale) * 100;
+            setProgressBar(errorsProgressBar, errorProgress);
+
+            // CPM Progress Bar
+            const maxCPMForScale = Math.max(500, highestCPM + 100);
+            let cpmProgress = (currentCPM / maxCPMForScale) * 100;
+            setProgressBar(cpmProgressBar, cpmProgress);
+
+            // KDPH Progress Bar
+            const maxKDPHForScale = Math.max(5000, highestKDPH + 500);
+            let kdphProgress = (currentKDPH / maxKDPHForScale) * 100;
+            setProgressBar(kdphProgressBar, kdphProgress);
+
+            // Time Left Progress Bar (100%-0%)
+            const timeLeftPercentage = (timeLeft / defaultTestDuration) * 100;
+            setProgressBar(timeProgressBar, timeLeftPercentage);
+        }
+
+
+        function updateStats() {
+            const timeElapsed = (defaultTestDuration - timeLeft);
+            if (!isTestRunning || timeElapsed === 0) {
+                wpmDisplay.textContent = 0;
+                accuracyDisplay.textContent = 0;
+                errorsDisplay.textContent = errors.incorrectChars + errors.missedChars + errors.extraChars + errors.skippedWords + errors.extraWords + errors.incorrectEnter + errors.incorrectSpace;
+                cpmDisplay.textContent = 0;
+                kdphDisplay.textContent = 0;
+                updateAllProgressBars();
+                return;
+            }
+
+            const minutesElapsed = timeElapsed / 60;
+            const hoursElapsed = timeElapsed / 3600;
+
+            const totalCalculatedErrors = errors.incorrectChars + errors.missedChars + errors.extraChars +
+                                        (errors.skippedWords * 5) + (errors.extraWords * 5) + errors.incorrectEnter + errors.incorrectSpace;
+
+
+            const netWPM = ((correctChars - totalCalculatedErrors) / 5) / minutesElapsed;
+            wpmDisplay.textContent = Math.max(0, Math.round(netWPM));
+
+            const currentCPM = correctChars / minutesElapsed;
+            cpmDisplay.textContent = isNaN(currentCPM) ? 0 : Math.round(currentCPM);
+
+            const currentKDPH = (correctChars / hoursElapsed);
+            kdphDisplay.textContent = isNaN(currentKDPH) ? 0 : Math.round(currentKDPH);
+
+
+            const currentAccuracy = totalTypedChars === 0 ? 0 : Math.round((correctChars / totalTypedChars) * 100);
+            accuracyDisplay.textContent = isNaN(currentAccuracy) ? 0 : currentAccuracy;
+
+            errorsDisplay.textContent = totalCalculatedErrors;
+
+            updateAllProgressBars();
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            isTestRunning = true;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                countdownDisplay.textContent = formatTime(timeLeft);
+                updateStats();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endTest();
+                }
+            }, 1000);
+        }
+
+        function endTest() {
+            isTestRunning = false;
+            typingInput.disabled = true;
+            typingInput.value = '';
+            clearInterval(timerInterval);
+
+            for (let i = wordIndex; i < testWords.length; i++) {
+                if (testWords[i] !== '\n') {
+                    errors.skippedWords++;
+                } else {
+                    errors.missedChars++;
+                }
+            }
+
+            updateStats();
+
+            const timeElapsed = (defaultTestDuration - timeLeft);
+            const finalMinutesElapsed = timeElapsed / 60;
+            const finalHoursElapsed = timeElapsed / 3600;
+
+            if (finalMinutesElapsed === 0) {
+                 finalWpmDisplay.textContent = 0;
+                 finalAccuracyDisplay.textContent = 0;
+                 finalErrorsDisplay.textContent = 0;
+                 rawWpmDisplay.textContent = 0;
+                 finalCpmDisplay.textContent = 0;
+                 finalKdphDisplay.textContent = 0;
+            } else {
+                const totalCalculatedErrors = errors.incorrectChars + errors.missedChars + errors.extraChars +
+                                            (errors.skippedWords * 5) + (errors.extraWords * 5) + errors.incorrectEnter + errors.incorrectSpace;
+
+                const finalNetWPM = Math.max(0, ((correctChars - totalCalculatedErrors) / 5) / finalMinutesElapsed);
+                finalWpmDisplay.textContent = Math.round(finalNetWPM);
+
+                const finalRawWPM = (totalTypedChars / 5) / finalMinutesElapsed;
+                rawWPMDisplay.textContent = Math.round(finalRawWPM);
+
+                const finalAccuracy = totalTypedChars === 0 ? 0 : Math.round((correctChars / totalTypedChars) * 100);
+                finalAccuracyDisplay.textContent = finalAccuracy;
+
+                const finalCPM = correctChars / finalMinutesElapsed;
+                finalCpmDisplay.textContent = Math.round(finalCPM);
+
+                const finalKDPH = correctChars / finalHoursElapsed;
+                finalKdphDisplay.textContent = Math.round(finalKDPH);
+
+                finalErrorsDisplay.textContent = totalCalculatedErrors;
+            }
+
+            errIncorrectChars.textContent = errors.incorrectChars;
+            errMissedChars.textContent = errors.missedChars;
+            errExtraChars.textContent = errors.extraChars;
+            errSkippedWords.textContent = errors.skippedWords;
+            errExtraWords.textContent = errors.extraWords;
+            errIncorrectEnter.textContent = errors.incorrectEnter;
+            errIncorrectSpace.textContent = errors.incorrectSpace;
+
+
+            finalWpmDisplay.className = 'result-value-green';
+            finalAccuracyDisplay.className = 'result-value-green';
+            finalErrorsDisplay.className = 'result-value-red';
+            rawWpmDisplay.className = 'result-value-purple';
+            finalCpmDisplay.className = 'result-value-orange';
+            finalKdphDisplay.className = 'result-value-kdph';
+
+            // Final Conclusion Progress Bar (a weighted average of WPM and Accuracy, penalizing errors)
+            let wpmScore = parseFloat(finalWpmDisplay.textContent);
+            let accuracyScore = parseFloat(finalAccuracyDisplay.textContent);
+            let totalErrors = parseFloat(finalErrorsDisplay.textContent);
+
+            // Normalize scores to a 0-100 range for the final bar
+            // Assuming a good WPM is 40-60, excellent is 80+, so scale WPM towards 100
+            let normalizedWPM = (wpmScore / 60) * 100; // Aiming for 60 WPM as a benchmark for 100% WPM score
+            normalizedWPM = Math.min(100, Math.max(0, normalizedWPM)); // Clamp between 0 and 100
+
+            let normalizedAccuracy = accuracyScore;
+
+            // Penalty for errors: e.g., 1 point deduction for every 5 errors (adjustable)
+            let errorPenalty = (totalErrors / 5) * 1;
+            errorPenalty = Math.min(50, errorPenalty); // Cap penalty to prevent negative scores
+
+            let finalConclusionProgress = (normalizedWPM * 0.6) + (normalizedAccuracy * 0.4) - errorPenalty; // Weighted average
+            finalConclusionProgress = Math.max(0, Math.min(100, finalConclusionProgress)); // Cap between 0 and 100
+
+            // Apply the single color for the final bar
+            setProgressBar(finalConclusionProgressBarFill, finalConclusionProgress);
+
+
+            // Check and update target status
+            if (userTargetWPM !== null && !isNaN(userTargetWPM)) {
+                if (parseFloat(finalWpmDisplay.textContent) >= userTargetWPM) {
+                    wpmTargetStatus.querySelector('p').textContent = `प्राप्त (${userTargetWPM} WPM)`; // Changed to Hindi
+                    wpmTargetStatus.querySelector('p').className = 'status-met';
+                } else {
+                    wpmTargetStatus.querySelector('p').textContent = `प्राप्त नहीं (${userTargetWPM} WPM)`; // Changed to Hindi
+                    wpmTargetStatus.querySelector('p').className = 'status-not-met';
+                }
+            } else {
+                wpmTargetStatus.querySelector('p').textContent = 'उपलब्ध नहीं'; // Changed to Hindi
+                wpmTargetStatus.querySelector('p').className = 'status-neutral';
+            }
+
+            if (userTargetAccuracy !== null && !isNaN(userTargetAccuracy)) {
+                if (parseFloat(finalAccuracyDisplay.textContent) >= userTargetAccuracy) {
+                    accuracyTargetStatus.querySelector('p').textContent = `प्राप्त (${userTargetAccuracy}%)`; // Changed to Hindi
+                    accuracyTargetStatus.querySelector('p').className = 'status-met';
+                } else {
+                    accuracyTargetStatus.querySelector('p').textContent = `प्राप्त नहीं (${userTargetAccuracy}%)`; // Changed to Hindi
+                    accuracyTargetStatus.querySelector('p').className = 'status-not-met';
+                }
+            } else {
+                accuracyTargetStatus.querySelector('p').textContent = 'उपलब्ध नहीं'; // Changed to Hindi
+                accuracyTargetStatus.querySelector('p').className = 'status-neutral';
+            }
+
+            resultModal.classList.add('show');
+            restartButton.disabled = false;
+            settingsButton.disabled = false;
+        }
+
+        async function initializeTest(duration, targetWPM, targetAccuracy, storyType, customText = '') {
+            clearInterval(timerInterval);
+            defaultTestDuration = duration * 60;
+            timeLeft = defaultTestDuration;
+            countdownDisplay.textContent = formatTime(timeLeft);
+            wordIndex = 0;
+            charIndex = 0;
+            correctChars = 0;
+            totalTypedChars = 0;
+            totalExpectedCharsInTest = 0;
+            errors = {
+                incorrectChars: 0,
+                missedChars: 0,
+                extraChars: 0,
+                skippedWords: 0,
+                extraWords: 0,
+                incorrectEnter: 0,
+                incorrectSpace: 0
+            };
+            highestWPM = 0; // Reset highest values
+            highestCPM = 0;
+            highestKDPH = 0;
+            isComposing = false; // Reset composition flag
+
+
+            typingInput.value = '';
+            typingInput.disabled = false;
+            startTime = null;
+            isTestRunning = false;
+
+            userTargetWPM = targetWPM ? parseInt(targetWPM) : null;
+            userTargetAccuracy = targetAccuracy ? parseInt(targetAccuracy) : null;
+            currentStoryType = storyType;
+            customStoryText = customText;
+
+            wpmDisplay.textContent = '0';
+            accuracyDisplay.textContent = '0';
+            errorsDisplay.textContent = '0';
+            cpmDisplay.textContent = '0';
+            kdphDisplay.textContent = '0';
+
+            // Reset all progress bars visually to 0% and their initial (or appropriate) fill
+            setProgressBar(wpmProgressBar, 0);
+            setProgressBar(accuracyProgressBar, 0);
+            setProgressBar(errorsProgressBar, 0);
+            setProgressBar(cpmProgressBar, 0);
+            setProgressBar(kdphProgressBar, 0);
+            setProgressBar(timeProgressBar, 100); // Time starts full
+
+            restartButton.disabled = false;
+            settingsButton.disabled = false;
+
+            const generationSuccess = await generateAndRenderTestWords();
+            if (!generationSuccess) {
+                return;
+            }
+
+            typingInput.focus();
+            resultModal.classList.remove('show');
+            settingsOverlay.classList.remove('show');
+            mainContent.classList.remove('content-hidden');
+        }
+
+
+        // Event Listeners
+
+        typingInput.addEventListener('compositionstart', () => {
+            isComposing = true;
+        });
+
+        typingInput.addEventListener('compositionend', () => {
+            isComposing = false;
+            // Trigger input processing if composition has ended and there's text
+            if (typingInput.value.length > 0) {
+                processInput();
+            }
+        });
+
+        typingInput.addEventListener('input', (e) => {
+            if (!isTestRunning && startTime === null) {
+                startTimer();
+            }
+            // Only process input directly if not composing
+            if (!isComposing) {
+                processInput();
+            }
+        });
+
+        function processInput() {
+            const currentExpectedItem = testWords[wordIndex];
+            const typedText = typingInput.value;
+
+            if (!currentExpectedItem) return; // Test might have ended
+
+            if (currentExpectedItem === '\n') {
+                // If expecting a newline, and user types something, clear input
+                // This prevents typing into the story text if the system doesn't auto-handle enter
+                if (typedText.length > 0) {
+                    typingInput.value = ''; // Clear input if user types instead of pressing Enter for newline
+                }
+                return;
+            }
+
+            const currentWordExpected = currentExpectedItem;
+            const currentWordSpan = getDomElementForTestItem(wordIndex);
+
+            if (!currentWordSpan || !currentWordSpan.classList.contains('word')) {
+                return;
+            }
+
+            const charSpans = Array.from(currentWordSpan.querySelectorAll('span'));
+
+            // Reset classes for current word's characters
+            charSpans.forEach(span => {
+                span.classList.remove('correct', 'incorrect', 'extra');
+                span.classList.add('untyped');
+                span.style.display = 'inline';
+            });
+
+            let currentWordCorrectChars = 0;
+
+            // Mark characters as correct/incorrect
+            for (let i = 0; i < currentWordExpected.length; i++) {
+                const charExpected = currentWordExpected[i];
+                const typedChar = typedText[i];
+                const charSpan = charSpans[i];
+
+                if (charSpan) {
+                    if (typedChar === undefined) {
+                        charSpan.classList.add('untyped');
+                    } else if (typedChar === charExpected) {
+                        charSpan.classList.add('correct');
+                        currentWordCorrectChars++;
+                    } else {
+                        charSpan.classList.add('incorrect');
+                    }
+                }
+            }
+
+            // Remove previous extra characters
+            currentWordSpan.querySelectorAll('.extra').forEach(el => el.remove());
+
+            // Add new extra characters
+            if (typedText.length > currentWordExpected.length) {
+                for (let i = currentWordExpected.length; i < typedText.length; i++) {
+                    const extraSpan = document.createElement('span');
+                    extraSpan.textContent = typedText[i];
+                    extraSpan.classList.add('extra');
+                    currentWordSpan.appendChild(extraSpan);
+                }
+            }
+
+            charIndex = typedText.length; // Update charIndex based on current input length
+
+            updateStats();
+        }
+
+
+        typingInput.addEventListener('keydown', (e) => {
+            if (!isTestRunning && startTime === null) {
+                startTimer();
+            }
+
+            // If a composition is in progress (e.g., swiping on mobile), don't process keydown events directly
+            // Wait for 'compositionend' to finalize the input.
+            if (isComposing) {
+                return;
+            }
+
+            const currentExpectedItem = testWords[wordIndex];
+            const typedText = typingInput.value;
+
+            // Handle Spacebar
+            if (e.key === ' ' || e.keyCode === 32 || e.which === 32) {
+                e.preventDefault(); // Prevent default space behavior
+
+                // If expecting a newline, and user presses space, it's an incorrect space
+                if (currentExpectedItem === '\n') {
+                    errors.incorrectSpace++;
+                    totalTypedChars++; // Count the space as a typed character
+                    typingInput.value = ''; // Clear input for next word
+                    updateStats();
+                    return; // Do not advance wordIndex here
+                }
+
+                // Process the word typed before the space
+                const currentWordExpected = currentExpectedItem;
+                let wordTyped = typedText;
+
+                let wordCorrectCharsCount = 0;
+
+                for (let i = 0; i < Math.max(currentWordExpected.length, wordTyped.length); i++) {
+                    const expectedChar = currentWordExpected[i];
+                    const typedChar = wordTyped[i];
+
+                    if (typedChar === undefined) { // Missed character in expected word
+                        errors.missedChars++;
+                    } else if (expectedChar === undefined) { // Extra character typed by user
+                        errors.extraChars++;
+                    } else if (typedChar !== expectedChar) { // Incorrect character typed
+                        errors.incorrectChars++;
+                    } else { // Correct character
+                        wordCorrectCharsCount++;
+                    }
+                }
+
+                correctChars += wordCorrectCharsCount;
+                totalTypedChars += wordTyped.length;
+                totalTypedChars++; // Count the space itself as a typed character
+
+                wordIndex++; // Move to the next word/item
+                typingInput.value = ''; // Clear input for next word
+                charIndex = 0;
+                highlightCurrentWord();
+
+                if (wordIndex >= testWords.length) {
+                    endTest();
+                }
+                updateStats();
+
+            // Handle Enter Key
+            } else if (e.key === 'Enter' || e.keyCode === 13 || e.which === 13) {
+                e.preventDefault(); // Prevent default Enter behavior (e.g., new line in input)
+
+                if (currentExpectedItem === '\n') {
+                    // If user typed anything before pressing enter for a newline, count as incorrect chars
+                    if (typedText.length > 0) {
+                        errors.incorrectChars += typedText.length;
+                        totalTypedChars += typedText.length;
+                    }
+
+                    correctChars++; // Count the correct 'Enter' as a correct character
+                    totalTypedChars++; // Count the 'Enter' as a typed character
+
+                    wordIndex++; // Move to the next word/item
+                    typingInput.value = ''; // Clear input
+                    charIndex = 0;
+                    highlightCurrentWord();
+
+                    if (wordIndex >= testWords.length) {
+                        endTest();
+                    }
+                } else {
+                    // If not expecting a newline but user presses Enter, it's an incorrect enter
+                    errors.incorrectEnter++;
+                    totalTypedChars++; // Count the 'Enter' as a typed character
+                }
+                updateStats();
+            } else if (e.key === 'Backspace') {
+                // Allow backspace to modify the typed text
+                if (charIndex > 0) {
+                    charIndex--;
+                }
+                // The 'input' event listener will handle the visual update after backspace
+            }
+        });
+
+        // Add an event listener for when the input field loses focus
+        typingInput.addEventListener('blur', () => {
+            if (isTestRunning && typingInput.value.length > 0) {
+                // If there's text in the input field and the test is running,
+                // simulate a spacebar press to process the current word.
+                // This is a fallback for mobile keyboards that might not trigger 'keydown' for space.
+                const currentExpectedItem = testWords[wordIndex];
+                if (currentExpectedItem && currentExpectedItem !== '\n') { // Only process if it's a word
+                    // Simulate processing of the current word
+                    let wordTyped = typingInput.value;
+                    let currentWordExpected = currentExpectedItem;
+
+                    let wordCorrectCharsCount = 0;
+                    for (let i = 0; i < Math.max(currentWordExpected.length, wordTyped.length); i++) {
+                        const expectedChar = currentWordExpected[i];
+                        const typedChar = wordTyped[i];
+
+                        if (typedChar === undefined) {
+                            errors.missedChars++;
+                        } else if (expectedChar === undefined) {
+                            errors.extraChars++;
+                        } else if (typedChar !== expectedChar) {
+                            errors.incorrectChars++;
+                        } else {
+                            wordCorrectCharsCount++;
+                        }
+                    }
+
+                    correctChars += wordCorrectCharsCount;
+                    totalTypedChars += wordTyped.length;
+                    totalTypedChars++; // Count the implied space/end-of-word
+
+                    wordIndex++;
+                    typingInput.value = '';
+                    charIndex = 0;
+                    highlightCurrentWord();
+
+                    if (wordIndex >= testWords.length) {
+                        endTest();
+                    }
+                    updateStats();
+                }
+            }
+        });
+
+
+        restartButton.addEventListener('click', () => {
+            settingsOverlay.classList.add('show');
+            resultModal.classList.remove('show');
+            mainContent.classList.add('content-hidden');
+            testDurationSelect.value = defaultTestDuration / 60;
+            targetWpmInput.value = userTargetWPM || '';
+            targetAccuracyInput.value = userTargetAccuracy || '';
+            storyTypeSelect.value = currentStoryType;
+            if (currentStoryType === 'user-custom') {
+                customStoryArea.style.display = 'block';
+                customStoryTextarea.value = customStoryText;
+            } else {
+                customStoryArea.style.display = 'none';
+            }
+        });
+
+        settingsButton.addEventListener('click', () => {
+            settingsOverlay.classList.add('show');
+            mainContent.classList.add('content-hidden');
+            testDurationSelect.value = defaultTestDuration / 60;
+            targetWpmInput.value = userTargetWPM || '';
+            targetAccuracyInput.value = userTargetAccuracy || '';
+            storyTypeSelect.value = currentStoryType;
+            if (currentStoryType === 'user-custom') {
+                customStoryArea.style.display = 'block';
+                customStoryTextarea.value = customStoryText;
+            } else {
+                customStoryArea.style.display = 'none';
+            }
+        });
+
+        saveSettingsButton.addEventListener('click', async () => {
+            const duration = parseInt(testDurationSelect.value);
+            const targetWPM = targetWpmInput.value;
+            const targetAccuracy = targetAccuracyInput.value;
+            const storyType = storyTypeSelect.value;
+            let storyContent = '';
+
+            if (storyType === 'user-custom') {
+                storyContent = customStoryTextarea.value.trim();
+            }
+            await initializeTest(duration, targetWPM, targetAccuracy, storyType, storyContent);
+        });
+
+        skipSettingsButton.addEventListener('click', async () => {
+            await initializeTest(5, null, null, 'random-words');
+        });
+
+        modalRestartButton.addEventListener('click', async () => {
+            await initializeTest(defaultTestDuration / 60, userTargetWPM, userTargetAccuracy, currentStoryType, customStoryText);
+        });
+
+        modalSettingsButton.addEventListener('click', () => {
+            resultModal.classList.remove('show');
+            settingsOverlay.classList.add('show');
+            mainContent.classList.add('content-hidden');
+            testDurationSelect.value = defaultTestDuration / 60;
+            targetWpmInput.value = userTargetWPM || '';
+            targetAccuracyInput.value = userTargetAccuracy || '';
+            storyTypeSelect.value = currentStoryType;
+            if (currentStoryType === 'user-custom') {
+                customStoryArea.style.display = 'block';
+                customStoryTextarea.value = customStoryText;
+            } else {
+                customStoryArea.style.display = 'none';
+            }
+        });
+
+        storyTypeSelect.addEventListener('change', () => {
+            if (storyTypeSelect.value === 'user-custom') {
+                customStoryArea.style.display = 'block';
+            } else {
+                customStoryArea.style.display = 'none';
+            }
+        });
+
+        addStoryLinkButton.addEventListener('click', () => {
+            window.open('https://blog.reedsy.com/short-stories/', '_blank'); // Reedsy is mostly English, so this might not be ideal for Hindi stories. Maybe a Hindi story source?
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            settingsOverlay.classList.add('show');
+            mainContent.classList.add('content-hidden');
+            countdownDisplay.textContent = formatTime(defaultTestDuration);
+            customStoryArea.style.display = 'none';
+            // Initialize all progress bars to their starting state
+            updateAllProgressBars();
+        });
+
+    </script>
+</body>
+</html>
