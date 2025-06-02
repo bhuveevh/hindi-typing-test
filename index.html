@@ -18,7 +18,7 @@
         }
     </script>
     <title>हिंदी टाइपिंग टेस्ट टूल</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Source+Code+Pro:wght@400;700&family=Open+Sans:wght=400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Source+Code+Pro:wght@400;700&family=Open+Sans:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* Basic Reset & Font Imports */
         * {
@@ -1456,7 +1456,13 @@
                 accuracyTargetStatus.querySelector('p').className = 'status-neutral';
             }
 
+            // Ensure the result modal is shown.
+            console.log("Attempting to show result modal."); // Debugging log
             resultModal.classList.add('show');
+            // Make sure the main content is hidden when modal shows to avoid overlapping
+            mainContent.classList.add('content-hidden');
+
+
             restartButton.disabled = false;
             settingsButton.disabled = false;
         }
