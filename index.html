@@ -6,57 +6,71 @@
     <title>हिंदी टाइपिंग टेस्ट</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Mangal:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&family=Hind+Siliguri:wght@400;700&family=Mangal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* General Styles */
+        /* --- General Body and Container Styles (Similar to English Tool) --- */
         body {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            background: #f0f2f5;
-            color: #333;
+            font-family: 'Noto Sans Devanagari', 'Roboto', sans-serif; /* Prioritize Noto for Hindi, fallback to Roboto */
+            background: #282c34; /* Dark background from English tool */
+            color: #e0e0e0; /* Light text color */
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
             overflow: hidden; /* Prevent body scroll when overlays are active */
+            line-height: 1.6;
         }
 
         .container {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            padding: 30px;
+            background: #3a3f47; /* Slightly lighter dark background for container */
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4); /* Deeper shadow */
+            padding: 40px;
             width: 90%;
             max-width: 900px;
             text-align: center;
             position: relative;
             z-index: 1; /* Ensure main content is below overlays */
+            box-sizing: border-box;
+            border: 1px solid #4a4f57; /* Subtle border */
         }
 
         h1 {
-            color: #4CAF50;
-            margin-bottom: 20px;
+            color: #61dafb; /* Light blue accent color */
+            margin-bottom: 25px;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
-        /* Test Area */
+        /* --- Test Area Styles (Similar to English Tool) --- */
         .test-area-wrapper {
-            border: 1px solid #ddd;
+            background: #2f333a; /* Darker background for test area */
+            border: 2px solid #555;
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            background: #f9f9f9;
+            padding: 25px;
+            margin-bottom: 30px;
             text-align: left;
             position: relative;
-            max-height: 200px; /* Limit height */
+            max-height: 220px; /* Slightly increased height */
             overflow-y: auto; /* Enable scrolling */
-            line-height: 1.8;
-            font-size: 20px;
+            font-size: 22px; /* Slightly larger font */
+            line-height: 1.9;
+            color: #e0e0e0; /* Light text for words */
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+            transition: border-color 0.3s ease;
+        }
+
+        .test-area-wrapper:focus-within {
+            border-color: #61dafb; /* Highlight on focus */
         }
 
         .test-area .word {
-            display: inline-block; /* Allows individual words to wrap */
-            margin-right: 5px; /* Space between words */
-            white-space: normal; /* Allow words to wrap within their span if they are too long (unlikely for typical words) */
+            display: inline-block;
+            margin-right: 6px; /* Space between words */
+            padding: 1px 0; /* Small vertical padding */
+            transition: background-color 0.1s ease, transform 0.1s ease;
         }
 
         .test-area .word:last-child {
@@ -64,175 +78,202 @@
         }
 
         .test-area span {
-            display: inline-block; /* Characters within words */
-            transition: background-color 0.1s ease;
+            display: inline-block;
+            transition: color 0.1s ease, background-color 0.1s ease;
         }
 
         .test-area .current-word {
-            background-color: #e0f7fa; /* Highlight current word */
-            border-radius: 3px;
+            background-color: rgba(97, 218, 251, 0.2); /* Semi-transparent light blue highlight */
+            border-radius: 4px;
+            transform: scale(1.02); /* Slight zoom on current word */
         }
 
         .test-area .current-newline-marker {
-            background-color: #ffe0b2; /* Highlight for newline */
-            border-radius: 3px;
-            padding: 0 5px;
+            background-color: rgba(255, 165, 0, 0.3); /* Orange highlight for newline */
+            border-radius: 4px;
+            padding: 0 8px;
             font-weight: bold;
+            color: #e0e0e0;
         }
 
         .test-area .correct {
-            color: #4CAF50;
+            color: #4CAF50; /* Green for correct */
         }
 
         .test-area .incorrect {
-            color: #f44336;
-            background-color: #ffcdd2;
+            color: #f44336; /* Red for incorrect */
+            background-color: rgba(244, 67, 54, 0.2); /* Semi-transparent red background */
+            border-radius: 2px;
         }
 
         .test-area .untyped {
-            color: #616161;
+            color: #9e9e9e; /* Grey for untyped */
         }
 
         .test-area .extra {
-            color: #9C27B0; /* Purple for extra characters */
-            background-color: #e1bee7;
+            color: #FFEB3B; /* Yellow for extra characters */
+            background-color: rgba(255, 235, 59, 0.2);
+            border-radius: 2px;
+            text-decoration: underline; /* Indicate as extra */
         }
 
         .test-area .newline-marker {
             display: inline-block;
-            width: 100%; /* Forces a new line */
-            height: 1px; /* Minimal height */
-            margin: 5px 0; /* Some vertical spacing */
+            width: 100%;
+            height: 1px;
+            margin: 8px 0; /* More vertical spacing */
             position: relative;
         }
 
         .test-area .newline-marker::after {
-            content: '⏎'; /* Enter symbol */
+            content: '↵'; /* Enter symbol */
             position: absolute;
             left: 0;
             top: 50%;
             transform: translateY(-50%);
             color: #9e9e9e;
-            font-size: 16px;
+            font-size: 18px;
+            padding: 0 5px;
         }
 
-
-        /* Input Field */
+        /* --- Input Field Styles (Similar to English Tool) --- */
         .typing-input {
-            width: calc(100% - 40px);
-            padding: 15px 20px;
-            font-size: 24px;
-            border: 2px solid #ccc;
+            width: calc(100% - 50px); /* Adjust padding */
+            padding: 18px 25px;
+            font-size: 26px; /* Larger font */
+            border: 2px solid #555;
             border-radius: 8px;
-            margin-bottom: 20px;
-            transition: border-color 0.3s ease;
+            margin-bottom: 30px;
+            background: #2f333a;
+            color: #e0e0e0;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
             text-align: left;
+            box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .typing-input::placeholder {
+            color: #888;
         }
 
         .typing-input:focus {
-            border-color: #4CAF50;
+            border-color: #61dafb;
             outline: none;
+            box-shadow: 0 0 15px rgba(97, 218, 251, 0.4); /* Glow effect on focus */
         }
 
-        /* Stats Display */
+        /* --- Stats Display (Similar to English Tool) --- */
         .stats {
             display: flex;
             justify-content: space-around;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
             flex-wrap: wrap;
+            gap: 15px; /* Gap between stat items */
         }
 
         .stat-item {
-            background: #e8f5e9;
-            padding: 15px;
-            border-radius: 8px;
+            background: #2f333a;
+            padding: 20px;
+            border-radius: 10px;
             flex: 1;
-            min-width: 120px;
-            margin: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            min-width: 150px; /* Slightly larger min-width */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid #4a4f57;
+            text-align: center;
         }
 
         .stat-item p {
             margin: 0;
-            font-size: 14px;
-            color: #555;
+            font-size: 1.1em;
+            color: #b0b0b0;
+            margin-bottom: 8px;
         }
 
         .stat-item .value {
-            font-size: 28px;
+            font-size: 2.2em; /* Larger value font */
             font-weight: bold;
-            color: #388E3C;
+            color: #61dafb; /* Primary accent color */
+            display: block; /* Ensures value is on new line */
         }
 
-        .stat-item.time .value { color: #2196F3; } /* Blue for Time */
-        .stat-item.accuracy .value { color: #FFC107; } /* Orange for Accuracy */
-        .stat-item.errors .value { color: #F44336; } /* Red for Errors */
-        .stat-item.cpm .value { color: #FF9800; } /* Orange for CPM */
-        .stat-item.kdph .value { color: #9C27B0; } /* Purple for KDPH */
+        .stat-item.time .value { color: #f9d71c; } /* Yellow for Time */
+        .stat-item.accuracy .value { color: #9B59B6; } /* Purple for Accuracy */
+        .stat-item.errors .value { color: #E74C3C; } /* Red for Errors */
+        .stat-item.cpm .value { color: #F39C12; } /* Orange for CPM */
+        .stat-item.kdph .value { color: #1ABC9C; } /* Teal for KDPH */
 
-        /* Progress Bars */
+        /* --- Progress Bars (Similar to English Tool) --- */
         .progress-section {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .progress-bar-container {
             width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            height: 10px;
-            margin-top: 5px;
+            background-color: #555; /* Darker background for container */
+            border-radius: 6px;
+            height: 12px; /* Thicker bar */
+            margin-top: 10px;
             overflow: hidden;
+            box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.3);
         }
 
         .progress-bar-fill {
             height: 100%;
             width: 0%;
-            border-radius: 5px;
-            transition: width 0.3s ease-out;
+            border-radius: 6px;
+            transition: width 0.4s ease-out; /* Smoother transition */
         }
 
-        .progress-bar-container.wpm .progress-bar-fill { background-color: #4CAF50; }
-        .progress-bar-container.accuracy .progress-bar-fill { background-color: #FFC107; }
-        .progress-bar-container.errors .progress-bar-fill { background-color: #F44336; }
-        .progress-bar-container.cpm .progress-bar-fill { background-color: #FF9800; }
-        .progress-bar-container.kdph .progress-bar-fill { background-color: #9C27B0; }
-        .progress-bar-container.time .progress-bar-fill { background-color: #2196F3; }
+        .progress-bar-container.wpm .progress-bar-fill { background-color: #61dafb; } /* Blue */
+        .progress-bar-container.accuracy .progress-bar-fill { background-color: #9B59B6; } /* Purple */
+        .progress-bar-container.errors .progress-bar-fill { background-color: #E74C3C; } /* Red */
+        .progress-bar-container.cpm .progress-bar-fill { background-color: #F39C12; } /* Orange */
+        .progress-bar-container.kdph .progress-bar-fill { background-color: #1ABC9C; } /* Teal */
+        .progress-bar-container.time .progress-bar-fill {
+            background: linear-gradient(to right, #61dafb, #f9d71c); /* Gradient for time */
+        }
 
 
-        /* Controls */
+        /* --- Controls (Buttons - Similar to English Tool) --- */
         .controls button {
-            background: #007bff;
-            color: white;
+            background: #61dafb; /* Primary button color */
+            color: #282c34; /* Dark text on light button */
             border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
+            padding: 15px 30px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 18px;
-            margin: 0 10px;
-            transition: background-color 0.3s ease;
+            font-size: 1.2em;
+            margin: 0 12px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .controls button:hover {
-            background: #0056b3;
+            background: #50b3e6; /* Slightly darker blue on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
         }
 
         .controls button:disabled {
-            background: #cccccc;
+            background: #555;
+            color: #a0a0a0;
             cursor: not-allowed;
+            transform: translateY(0);
+            box-shadow: none;
         }
 
-        /* Settings Overlay */
+        /* --- Overlay (Settings & Result Modals - Similar to English Tool) --- */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.85); /* Darker, more opaque overlay */
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 100;
+            z-index: 1000; /* Higher z-index */
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0s linear 0.3s;
@@ -245,255 +286,294 @@
         }
 
         .overlay-content {
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            background: #3a3f47;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
             width: 90%;
-            max-width: 500px;
+            max-width: 550px; /* Slightly wider */
             text-align: left;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
+            transform: translateY(-30px); /* More pronounced slide-in */
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            border: 1px solid #4a4f57;
+            box-sizing: border-box;
+            color: #e0e0e0;
         }
 
         .overlay.show .overlay-content {
             transform: translateY(0);
+            opacity: 1;
         }
 
         .overlay-content h2 {
-            color: #388E3C;
-            margin-bottom: 25px;
+            color: #61dafb;
+            margin-bottom: 30px;
             text-align: center;
+            font-size: 2em;
+            font-weight: 700;
         }
 
         .settings-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .settings-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: bold;
-            color: #555;
+            color: #b0b0b0;
+            font-size: 1.1em;
         }
 
         .settings-group select,
         .settings-group input[type="number"],
         .settings-group textarea {
-            width: calc(100% - 22px);
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
+            width: calc(100% - 24px); /* Adjust padding */
+            padding: 12px;
+            border: 1px solid #555;
+            border-radius: 6px;
+            font-size: 1.05em;
+            background: #2f333a;
+            color: #e0e0e0;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .settings-group select:focus,
         .settings-group input[type="number"]:focus,
         .settings-group textarea:focus {
-            border-color: #4CAF50;
+            border-color: #61dafb;
             outline: none;
+            box-shadow: 0 0 10px rgba(97, 218, 251, 0.3);
         }
 
         .settings-group textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 120px; /* Taller textarea */
         }
 
         .settings-buttons {
             display: flex;
             justify-content: space-around;
-            margin-top: 30px;
+            margin-top: 40px;
+            gap: 20px;
         }
 
         .settings-buttons button {
-            background: #28a745;
-            color: white;
+            background: #61dafb;
+            color: #282c34;
             border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
+            padding: 15px 30px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
+            font-size: 1.2em;
+            font-weight: 700;
+            flex: 1;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .settings-buttons button.secondary {
-            background: #6c757d;
+            background: #555;
+            color: #e0e0e0;
         }
 
         .settings-buttons button:hover {
             opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .settings-buttons button.secondary:hover {
+            background: #666;
         }
 
-        /* Result Modal */
+
+        /* --- Result Modal Specific Styles (Similar to English Tool) --- */
         #result-modal .overlay-content {
-            max-width: 600px;
+            max-width: 650px;
         }
 
         #result-modal h2 {
-            color: #4CAF50;
+            color: #61dafb;
         }
 
         .result-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Adjusted grid columns */
+            gap: 20px; /* Increased gap */
+            margin-bottom: 25px;
         }
 
         .result-row {
-            background: #e8f5e9;
-            padding: 15px;
-            border-radius: 8px;
+            background: #2f333a;
+            padding: 20px;
+            border-radius: 10px;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid #4a4f57;
         }
 
         .result-row p {
             margin: 0;
-            font-size: 14px;
-            color: #555;
+            font-size: 1.1em;
+            color: #b0b0b0;
+            margin-bottom: 5px;
         }
 
         .result-value {
-            font-size: 28px;
+            font-size: 2.5em; /* Larger value font */
             font-weight: bold;
-            margin-top: 5px;
+            display: block;
         }
-        .result-value-green { color: #388E3C; }
-        .result-value-red { color: #F44336; }
-        .result-value-purple { color: #9C27B0; }
-        .result-value-orange { color: #FF9800; }
-        .result-value-kdph { color: #673AB7; } /* A different purple/indigo for KDPH */
+        .result-value-green { color: #4CAF50; }
+        .result-value-red { color: #E74C3C; }
+        .result-value-purple { color: #9B59B6; }
+        .result-value-orange { color: #F39C12; }
+        .result-value-kdph { color: #1ABC9C; } /* Teal for KDPH */
 
         .error-details {
             text-align: left;
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #ffebee;
-            border-radius: 8px;
-            border: 1px solid #ef9a9a;
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #2f333a;
+            border-radius: 10px;
+            border: 1px solid #E74C3C; /* Red border for errors */
+            box-shadow: 0 2px 10px rgba(231, 76, 60, 0.2);
+            color: #e0e0e0;
         }
 
         .error-details h3 {
-            color: #F44336;
+            color: #E74C3C;
             margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 18px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            text-align: center;
         }
 
         .error-details p {
-            margin: 5px 0;
-            font-size: 15px;
-            color: #d32f2f;
+            margin: 8px 0;
+            font-size: 1.05em;
+            color: #e0e0e0;
         }
 
         .target-status {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dashed #555; /* Dashed separator */
             display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
         }
 
         .target-status div {
             flex: 1;
-            min-width: 150px;
+            min-width: 160px;
             text-align: center;
-            padding: 10px;
-            background-color: #f1f8e9;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 15px;
+            background-color: #2f333a;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            border: 1px solid #4a4f57;
         }
 
         .target-status p {
             margin: 0;
             font-weight: bold;
+            font-size: 1.05em;
+            color: #b0b0b0;
+        }
+
+        .target-status p:last-child {
+            font-size: 1.4em;
+            margin-top: 5px;
         }
 
         .status-met {
-            color: #2E7D32; /* Dark green */
+            color: #4CAF50; /* Green */
         }
 
         .status-not-met {
-            color: #D32F2F; /* Dark red */
+            color: #E74C3C; /* Red */
         }
 
         .status-neutral {
-            color: #616161; /* Grey */
+            color: #b0b0b0; /* Grey */
         }
 
         .result-buttons {
-            margin-top: 30px;
+            margin-top: 40px;
             display: flex;
             justify-content: space-around;
+            gap: 20px;
         }
 
         .result-buttons button {
-            background: #4CAF50;
-            color: white;
+            background: #61dafb;
+            color: #282c34;
             border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
+            padding: 15px 30px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
+            font-size: 1.2em;
+            font-weight: 700;
+            flex: 1;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .result-buttons button.secondary {
-            background: #007bff;
+            background: #555;
+            color: #e0e0e0;
         }
 
         .result-buttons button:hover {
             opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .result-buttons button.secondary:hover {
+            background: #666;
         }
 
-        /* Font-specific styles */
-        .font-mangal {
-            font-family: 'Mangal', sans-serif;
-        }
-        .font-krutidev {
-            font-family: 'Kruti Dev 010', sans-serif; /* You'll need to ensure this font is available or linked */
-        }
-        .font-hind {
-            font-family: 'Hind Siliguri', sans-serif;
-        }
-        .font-noto {
-            font-family: 'Noto Sans Devanagari', sans-serif;
-        }
+        /* --- Font-specific styles --- */
+        .font-mangal { font-family: 'Mangal', sans-serif; }
+        .font-krutidev { font-family: 'Kruti Dev 010', sans-serif; } /* Ensure this font is available to the user */
+        .font-hind { font-family: 'Hind Siliguri', sans-serif; }
+        .font-noto { font-family: 'Noto Sans Devanagari', sans-serif; }
 
         #krutidev-warning {
-            background-color: #fff3e0;
-            border: 1px solid #ffcc80;
+            background-color: #FFEB3B; /* Yellow background for warning */
+            border: 1px solid #F39C12; /* Orange border */
             padding: 10px;
             margin-top: 15px;
-            border-radius: 5px;
-            color: #e65100;
-            font-size: 14px;
+            border-radius: 6px;
+            color: #333; /* Dark text on light background */
+            font-size: 1.05em;
             text-align: center;
             display: none; /* Hidden by default */
+            font-weight: bold;
         }
         #krutidev-warning.show {
             display: block;
         }
         .story-link-button {
             display: block;
-            margin-top: 15px;
-            background-color: #17a2b8; /* Info blue */
+            margin-top: 20px; /* More space */
+            background-color: #007bff; /* Blue for external link */
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
+            padding: 12px 20px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 1.05em;
             width: 100%;
             box-sizing: border-box;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .story-link-button:hover {
-            background-color: #138496;
+            background-color: #0056b3;
+            transform: translateY(-1px);
         }
 
 
@@ -502,25 +582,30 @@
             display: none;
         }
 
-        /* Responsive adjustments */
+        /* --- Responsive adjustments --- */
         @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                padding: 25px;
+            }
+            h1 {
+                font-size: 2em;
             }
             .stats {
                 flex-direction: column;
                 align-items: center;
             }
             .stat-item {
-                width: 90%;
-                margin-bottom: 10px;
+                width: 95%;
+                max-width: 300px;
             }
             .typing-input {
-                font-size: 20px;
+                font-size: 22px;
+                padding: 15px 20px;
             }
             .controls button, .settings-buttons button, .result-buttons button {
-                padding: 10px 20px;
-                font-size: 16px;
+                padding: 12px 25px;
+                font-size: 1em;
+                margin: 0 5px;
             }
             .settings-buttons, .result-buttons {
                 flex-direction: column;
@@ -531,6 +616,15 @@
             }
             .result-stats {
                 grid-template-columns: 1fr;
+            }
+            .overlay-content {
+                padding: 30px;
+            }
+            .result-value {
+                font-size: 2em;
+            }
+            .error-details, .target-status div {
+                padding: 15px;
             }
         }
     </style>
@@ -785,7 +879,7 @@
         // Result Modal Elements
         const resultModal = document.getElementById('result-modal');
         const finalWpmDisplay = document.getElementById('final-wpm-display');
-        const rawWPMDisplay = document.getElementById('raw-wpm-display'); // <-- यहाँ जोड़ा गया!
+        const rawWPMDisplay = document.getElementById('raw-wpm-display');
         const finalAccuracyDisplay = document.getElementById('final-accuracy-display');
         const finalErrorsDisplay = document.getElementById('final-errors-display');
         const finalCpmDisplay = document.getElementById('final-cpm-display');
@@ -1201,12 +1295,12 @@
             errIncorrectSpace.textContent = errors.incorrectSpace;
 
 
-            finalWpmDisplay.className = 'result-value-green';
-            finalAccuracyDisplay.className = 'result-value-green';
-            finalErrorsDisplay.className = 'result-value-red';
-            rawWPMDisplay.className = 'result-value-purple';
-            finalCpmDisplay.className = 'result-value-orange';
-            finalKdphDisplay.className = 'result-value-kdph';
+            finalWpmDisplay.className = 'result-value result-value-green';
+            finalAccuracyDisplay.className = 'result-value result-value-green';
+            finalErrorsDisplay.className = 'result-value result-value-red';
+            rawWPMDisplay.className = 'result-value result-value-purple';
+            finalCpmDisplay.className = 'result-value result-value-orange';
+            finalKdphDisplay.className = 'result-value result-value-kdph';
 
             // Final Conclusion Progress Bar (a weighted average of WPM and Accuracy, penalizing errors)
             let wpmScore = parseFloat(finalWpmDisplay.textContent);
@@ -1234,45 +1328,32 @@
             // Check and update target status
             if (userTargetWPM !== null && !isNaN(userTargetWPM)) {
                 if (parseFloat(finalWpmDisplay.textContent) >= userTargetWPM) {
-                    wpmTargetStatus.querySelector('p').textContent = `Achieved (${userTargetWPM} WPM)`;
-                    wpmTargetStatus.querySelector('p').className = 'status-met';
+                    wpmTargetStatus.querySelector('p:last-child').textContent = `प्राप्त (${userTargetWPM} WPM)`;
+                    wpmTargetStatus.querySelector('p:last-child').className = 'status-met';
                 } else {
-                    wpmTargetStatus.querySelector('p').textContent = `Not Achieved (${userTargetWPM} WPM)`;
-                    wpmTargetStatus.querySelector('p').className = 'status-not-met';
+                    wpmTargetStatus.querySelector('p:last-child').textContent = `प्राप्त नहीं (${userTargetWPM} WPM)`;
+                    wpmTargetStatus.querySelector('p:last-child').className = 'status-not-met';
                 }
             } else {
-                wpmTargetStatus.querySelector('p').textContent = 'N/A';
-                wpmTargetStatus.querySelector('p').className = 'status-neutral';
+                wpmTargetStatus.querySelector('p:last-child').textContent = 'लागू नहीं';
+                wpmTargetStatus.querySelector('p:last-child').className = 'status-neutral';
             }
 
             if (userTargetAccuracy !== null && !isNaN(userTargetAccuracy)) {
                 if (parseFloat(finalAccuracyDisplay.textContent) >= userTargetAccuracy) {
-                    accuracyTargetStatus.querySelector('p').textContent = `Achieved (${userTargetAccuracy}%)`;
-                    accuracyTargetStatus.querySelector('p').className = 'status-met';
+                    accuracyTargetStatus.querySelector('p:last-child').textContent = `प्राप्त (${userTargetAccuracy}%)`;
+                    accuracyTargetStatus.querySelector('p:last-child').className = 'status-met';
                 } else {
-                    accuracyTargetStatus.querySelector('p').textContent = `Not Achieved (${userTargetAccuracy}%)`;
-                    accuracyTargetStatus.querySelector('p').className = 'status-not-met';
+                    accuracyTargetStatus.querySelector('p:last-child').textContent = `प्राप्त नहीं (${userTargetAccuracy}%)`;
+                    accuracyTargetStatus.querySelector('p:last-child').className = 'status-not-met';
                 }
             } else {
-                accuracyTargetStatus.querySelector('p').textContent = 'N/A';
-                accuracyTargetStatus.querySelector('p').className = 'status-neutral';
+                accuracyTargetStatus.querySelector('p:last-child').textContent = 'लागू नहीं';
+                accuracyTargetStatus.querySelector('p:last-child').className = 'status-neutral';
             }
 
             // Ensure the result modal is shown.
-            console.log("Attempting to show result modal."); // Debugging log
-            console.log("Result Modal Element:", resultModal); // Log the element itself
-            console.log("Result Modal's current classes before 'add':", resultModal.classList); // Check classes before adding 'show'
             resultModal.classList.add('show');
-            // Add a small delay to ensure CSS transition has time to process (though 'visibility 0s' should make it instant)
-            setTimeout(() => {
-                console.log("Result Modal's current classes AFTER 'add' and slight delay:", resultModal.classList);
-                if (resultModal.style.visibility === 'hidden' || resultModal.style.opacity === '0') {
-                    console.error("Result modal is still hidden or transparent despite 'show' class.");
-                }
-            }, 50); // A small delay to see if something immediately overrides
-
-
-            // Make sure the main content is hidden when modal shows to avoid overlapping
             mainContent.classList.add('content-hidden');
 
 
